@@ -1,6 +1,6 @@
 # T7 Technology Solutions website
 
-Source for https://t7techfl.com, hosted on Netlify.
+Source for https://t7techfl.com, hosted on Netlify (project: t7techsite, https://t7techsite.netlify.app).
 
 - `index.html`: home page
 - `thanks.html`: shown after the contact form is submitted (Netlify Forms)
