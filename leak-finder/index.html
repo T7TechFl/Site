@@ -128,6 +128,20 @@ section.block { padding-block: 48px 8px; display: flex; flex-direction: column; 
 .unlock .field { color: var(--on-ink); }
 .unlock .field input { border-color: #4A5B68; }
 .unlock .full { grid-column: 1 / -1; }
+[hidden] { display: none !important; }
+.unlock .eyebrow { color: var(--mint); }
+.gate-title { font-size: clamp(28px, 4.6vw, 38px); line-height: 1.08; }
+.teaser { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
+.tz { background: var(--ink-2); border: 1px solid #2E3D48; border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; }
+.tz-label { font-size: 13px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--mint); }
+.tz-blur { font-family: var(--display); font-weight: 700; font-size: 26px; line-height: 1.1; color: var(--on-ink); filter: blur(9px); user-select: none; }
+.gets { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; color: #E4EAEE; }
+.gets li { display: flex; gap: 10px; align-items: flex-start; }
+.gets li::before { content: ""; flex: none; width: 18px; height: 18px; margin-top: 4px; border-radius: 50%; background: var(--mint); -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M5 12l5 5L19 7' fill='none' stroke='black' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 14px no-repeat, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
+.sendnums { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 20px 24px; display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
+.sendnums p:first-child { flex: 999 1 320px; color: var(--body); font-size: 15.5px; }
+.fine-dark { flex-basis: 100%; font-size: 14px; font-weight: 700; color: var(--accent); }
+.fine-dark:empty { display: none; }
 .check { display: flex; gap: 10px; align-items: flex-start; font-size: 15px; color: #E4EAEE; font-weight: 600; cursor: pointer; }
 .check input { width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--mint); flex: none; }
 .fine { font-size: 13.5px; color: var(--on-ink-muted); }
@@ -213,9 +227,61 @@ footer a { color: #DCE3E8; }
     <button class="linkbtn" id="reset" type="button">Clear my answers</button>
   </section>
 
+  <section class="wrap block" aria-labelledby="sGate">
+    <div class="unlock" id="unlock">
+      <div>
+        <p class="eyebrow">Step 2 · Your results</p>
+        <h2 id="sGate" class="gate-title">See what your leaks are costing you</h2>
+      </div>
+      <p class="sub" id="gateSub">Enter your name and email to unlock your full results. They're free, and they take about 5 more minutes.</p>
+      <div class="teaser" aria-hidden="true">
+        <div class="tz"><span class="tz-label">Your score means</span><span class="tz-blur">Slow drip</span></div>
+        <div class="tz"><span class="tz-label">Your leaks cost about</span><span class="tz-blur">$4,850 / mo</span></div>
+        <div class="tz"><span class="tz-label">Your best next step</span><span class="tz-blur">Money Map</span></div>
+      </div>
+      <ul class="gets">
+        <li>What your score means, and what to do about it</li>
+        <li>A dollar figure on your top two leaks, per month and per year</li>
+        <li>The next step that fits your business</li>
+      </ul>
+      <form name="leak-finder" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="leadForm" novalidate>
+        <input type="hidden" name="form-name" value="leak-finder">
+        <input type="hidden" name="subject" id="f_subject" value="New Leak Finder result">
+        <input type="hidden" name="stage" id="f_stage" value="Unlocked results">
+        <p class="visually-hidden"><label>Don't fill this out: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+        <label class="field" for="f_name">Your name<input id="f_name" name="name" type="text" autocomplete="name" required></label>
+        <label class="field" for="f_email">Email<input id="f_email" name="email" type="email" autocomplete="email" required></label>
+        <label class="field full" for="f_business">Business name <span class="hint" style="color: var(--on-ink-muted)">Optional</span><input id="f_business" name="business" type="text" autocomplete="organization"></label>
+        <label class="check full" for="f_optin"><input id="f_optin" name="marketing_opt_in" type="checkbox" value="Yes"> Send me occasional tips from T7 on saving time and money. Unsubscribe anytime.</label>
+        <input type="hidden" name="score" id="f_score">
+        <input type="hidden" name="score_band" id="f_band">
+        <input type="hidden" name="yes_answers" id="f_yes">
+        <input type="hidden" name="hourly_value" id="f_rate">
+        <input type="hidden" name="average_job_value" id="f_jv">
+        <input type="hidden" name="leak_1" id="f_l1">
+        <input type="hidden" name="leak_1_monthly_cost" id="f_l1c">
+        <input type="hidden" name="leak_2" id="f_l2">
+        <input type="hidden" name="leak_2_monthly_cost" id="f_l2c">
+        <input type="hidden" name="monthly_total" id="f_month">
+        <input type="hidden" name="yearly_total" id="f_year">
+        <input type="hidden" name="suggested_next_step" id="f_rec">
+        <div class="full" style="display: flex; flex-direction: column; gap: 10px">
+          <p class="err" id="formErr" role="alert" hidden></p>
+          <button class="btn light" type="submit" id="submitBtn" style="align-self: flex-start">Unlock my results</button>
+          <p class="fine">Your email is used to follow up about your results. Tips only if you check the box.</p>
+        </div>
+      </form>
+      <div class="done" id="doneMsg" hidden>
+        <strong id="doneTitle">Your results are unlocked.</strong>
+        <p class="sub">Scroll down to see what your score means and put a dollar figure on your leaks.</p>
+      </div>
+    </div>
+  </section>
+
+  <div id="results" hidden>
   <section class="wrap block" aria-labelledby="s2">
     <div class="block-head">
-      <p class="eyebrow">Step 2</p>
+      <p class="eyebrow">Step 3</p>
       <h2 id="s2">What your score means</h2>
     </div>
     <div class="bands">
@@ -246,7 +312,7 @@ footer a { color: #DCE3E8; }
 
   <section class="wrap block" aria-labelledby="s3">
     <div class="block-head">
-      <p class="eyebrow">Step 3</p>
+      <p class="eyebrow">Step 4</p>
       <h2 id="s3">Put a dollar figure on it</h2>
       <p class="lede">Every leak costs you lost time, lost sales, or both. Pick your two biggest leaks and fill in rough numbers. Estimates are fine.</p>
     </div>
@@ -263,54 +329,21 @@ footer a { color: #DCE3E8; }
     <div class="calc-grid" id="calc"></div>
     <p class="example"><b>Example with made-up numbers:</b> a remodeler answers Yes to slow callbacks. About 3 leads a month hire someone else before he calls back, and his average job is $2,000. That's 3 × $2,000 = $6,000 a month, about $72,000 a year, from one leak. Even if only one of those leads would have hired him, that's still $2,000 a month.</p>
 
-    <div class="unlock" id="unlock">
-      <div>
-        <p class="eyebrow">Your results</p>
-        <h3>See what your leaks cost you</h3>
-      </div>
-      <p class="sub">Enter your name and email to see your monthly and yearly cost, plus the next step that fits your score. Michael gets a copy of your results so your free Score Review can start with your numbers.</p>
-      <form name="leak-finder" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="leadForm" novalidate>
-        <input type="hidden" name="form-name" value="leak-finder">
-        <input type="hidden" name="subject" id="f_subject" value="New Leak Finder result">
-        <p class="visually-hidden"><label>Don't fill this out: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
-        <label class="field" for="f_name">Your name<input id="f_name" name="name" type="text" autocomplete="name" required></label>
-        <label class="field" for="f_email">Email<input id="f_email" name="email" type="email" autocomplete="email" required></label>
-        <label class="field full" for="f_business">Business name <span class="hint" style="color: var(--on-ink-muted)">Optional</span><input id="f_business" name="business" type="text" autocomplete="organization"></label>
-        <label class="check full" for="f_optin"><input id="f_optin" name="marketing_opt_in" type="checkbox" value="Yes"> Send me occasional tips from T7 on saving time and money. Unsubscribe anytime.</label>
-        <input type="hidden" name="score" id="f_score">
-        <input type="hidden" name="score_band" id="f_band">
-        <input type="hidden" name="yes_answers" id="f_yes">
-        <input type="hidden" name="hourly_value" id="f_rate">
-        <input type="hidden" name="average_job_value" id="f_jv">
-        <input type="hidden" name="leak_1" id="f_l1">
-        <input type="hidden" name="leak_1_monthly_cost" id="f_l1c">
-        <input type="hidden" name="leak_2" id="f_l2">
-        <input type="hidden" name="leak_2_monthly_cost" id="f_l2c">
-        <input type="hidden" name="monthly_total" id="f_month">
-        <input type="hidden" name="yearly_total" id="f_year">
-        <input type="hidden" name="suggested_next_step" id="f_rec">
-        <div class="full" style="display: flex; flex-direction: column; gap: 10px">
-          <p class="err" id="formErr" role="alert" hidden></p>
-          <button class="btn light" type="submit" id="submitBtn" style="align-self: flex-start">Show my results</button>
-          <p class="fine">Your email is used to follow up about your results. Tips only if you check the box.</p>
-        </div>
-      </form>
-      <div class="done" id="doneMsg" hidden>
-        <strong id="doneTitle">Your results are unlocked.</strong>
-        <p class="sub">Michael has a copy of your results and will reach out about a free 15-minute Score Review. Change any number above and your totals update below.</p>
-      </div>
-    </div>
-
     <div class="total" aria-live="polite">
-      <div><span>Monthly cost of these leaks</span><strong id="tMonth"><span class="lock">Locked</span></strong></div>
-      <div><span>Yearly cost</span><strong id="tYear"><span class="lock">Locked</span></strong></div>
-      <p id="tNote">Enter your name and email above to see your totals.</p>
+      <div><span>Monthly cost of these leaks</span><strong id="tMonth">$0</strong></div>
+      <div><span>Yearly cost</span><strong id="tYear">$0</strong></div>
+      <p id="tNote">Fill in hours or lost jobs for at least one leak to see what it costs you.</p>
+    </div>
+    <div class="sendnums">
+      <p>Want to walk through these numbers on your free Score Review? Send them to Michael so he comes prepared.</p>
+      <button class="btn" type="button" id="sendNums">Send my numbers to Michael</button>
+      <p class="fine-dark" id="sendMsg" role="status"></p>
     </div>
   </section>
 
   <section class="wrap block" aria-labelledby="s4">
     <div class="block-head">
-      <p class="eyebrow">Step 4 · Your next step</p>
+      <p class="eyebrow">Step 5 · Your next step</p>
       <h2 id="s4">Do you already know what's broken?</h2>
       <p class="lede" id="recLine">Unlock your results above to see which door we suggest for you.</p>
     </div>
@@ -333,6 +366,7 @@ footer a { color: #DCE3E8; }
       </div>
     </div>
   </section>
+  </div>
 </main>
 
 <section class="band cta" aria-labelledby="s5">
@@ -374,8 +408,8 @@ footer a { color: #DCE3E8; }
     ["Would you struggle to name your single biggest expense, or roughly how much it costs you each month?", "Unwatched costs", "your biggest expense can creep up for months before anyone notices"]
   ];
   var BANDS = ["Tight ship", "Slow drip", "Wide open"];
-  var KEY = "t7-leak-finder-v1";
-  var state = { answers: {}, leaks: [{ q: "", hours: "", jobs: "" }, { q: "", hours: "", jobs: "" }], rate: "50", jobValue: "", unlocked: false, name: "" };
+  var KEY = "t7-leak-finder-v2";
+  var state = { answers: {}, leaks: [{ q: "", hours: "", jobs: "" }, { q: "", hours: "", jobs: "" }], rate: "50", jobValue: "", unlocked: false, name: "", email: "", business: "", sentSig: "" };
   try { var saved = JSON.parse(localStorage.getItem(KEY) || "null"); if (saved && saved.answers) state = Object.assign(state, saved); } catch (e) {}
   function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
   function $(id) { return document.getElementById(id); }
@@ -409,11 +443,12 @@ footer a { color: #DCE3E8; }
   });
 
   function yesIdx() { return QUESTIONS.map(function (_, i) { return i; }).filter(function (i) { return state.answers[i] === "yes"; }); }
+  function answeredCount() { return Object.keys(state.answers).length; }
   function num(v) { var n = parseFloat(v); return isFinite(n) && n > 0 ? n : 0; }
   function money(n) { return "$" + Math.round(n).toLocaleString("en-US"); }
   function leakCost(k) { return num(state.leaks[k].hours) * num(state.rate) + num(state.leaks[k].jobs) * num(state.jobValue); }
   function leakName(k) { var q = state.leaks[k].q; return q === "" ? "" : "#" + (+q + 1) + " " + QUESTIONS[+q][1]; }
-  function lockHTML() { return '<span class="lock">Locked</span>'; }
+  function bandIdx(score) { return score <= 2 ? 0 : score <= 5 ? 1 : 2; }
 
   var calc = $("calc");
   function buildCalc() {
@@ -427,7 +462,7 @@ footer a { color: #DCE3E8; }
           '<label class="field" for="l' + k + 'h">Hours lost per month<input id="l' + k + 'h" type="number" inputmode="decimal" min="0" step="1" placeholder="0"></label>' +
           '<label class="field" for="l' + k + 'j">Jobs or clients lost per month<input id="l' + k + 'j" type="number" inputmode="decimal" min="0" step="1" placeholder="0"></label>' +
         '</div>' +
-        '<div class="leakcost"><span>This leak costs about</span><strong id="l' + k + 'c"></strong></div>';
+        '<div class="leakcost"><span>This leak costs about</span><strong id="l' + k + 'c">$0 / mo</strong></div>';
       calc.appendChild(card);
       var h = $("l" + k + "h"), j = $("l" + k + "j"), s = $("l" + k + "q");
       h.value = state.leaks[k].hours; j.value = state.leaks[k].jobs;
@@ -451,44 +486,42 @@ footer a { color: #DCE3E8; }
   }
 
   function recommendation() {
-    var answered = Object.keys(state.answers).length, score = yesIdx().length;
-    if (!answered) return { door: "", line: "Answer the scorecard to see which door fits." };
+    var score = yesIdx().length;
+    if (!answeredCount()) return { door: "", line: "Answer the scorecard to see which door fits." };
     if (score === 0) return { door: "map", line: "No leaks found. If something still feels off, the Money Map will show you where to look." };
     if (score <= 2) return { door: "fix", line: "With one or two leaks, you probably know what to fix. The 30-Day Fix is built for that." };
     return { door: "map", line: "With " + score + " leaks, start by seeing which one costs the most. That's what the Money Map is for." };
   }
 
+  function costSig() { return [state.rate, state.jobValue, state.leaks[0].q, state.leaks[0].hours, state.leaks[0].jobs, state.leaks[1].q, state.leaks[1].hours, state.leaks[1].jobs, yesIdx().join(",")].join("|"); }
+  function hasNumbers() { return !!(num(state.leaks[0].hours) || num(state.leaks[0].jobs) || num(state.leaks[1].hours) || num(state.leaks[1].jobs)); }
+
   function renderCalc() {
-    var total = leakCost(0) + leakCost(1), any = false;
-    [0, 1].forEach(function (k) {
-      if (num(state.leaks[k].hours) || num(state.leaks[k].jobs)) any = true;
-      $("l" + k + "c").innerHTML = state.unlocked ? money(leakCost(k)) + " / mo" : lockHTML();
-    });
+    var total = leakCost(0) + leakCost(1);
+    [0, 1].forEach(function (k) { $("l" + k + "c").textContent = money(leakCost(k)) + " / mo"; });
+    $("tMonth").textContent = money(total);
+    $("tYear").textContent = money(total * 12);
     var note = $("tNote");
-    if (!state.unlocked) {
-      $("tMonth").innerHTML = lockHTML(); $("tYear").innerHTML = lockHTML();
-      note.textContent = "Enter your name and email above to see your totals.";
-    } else {
-      $("tMonth").textContent = money(total);
-      $("tYear").textContent = money(total * 12);
-      var needJv = (num(state.leaks[0].jobs) || num(state.leaks[1].jobs)) && !num(state.jobValue);
-      if (needJv) note.textContent = "Add your average job or client value above to count the jobs you're losing.";
-      else if (!any) note.textContent = "Fill in hours or lost jobs for at least one leak to see what it costs you.";
-      else note.textContent = "That's what these leaks cost before you fix them. Bring this number to your Score Review.";
-    }
-    var rec = recommendation(), map = $("doorMap"), fix = $("doorFix");
-    map.classList.toggle("rec", state.unlocked && rec.door === "map");
-    fix.classList.toggle("rec", state.unlocked && rec.door === "fix");
-    $("recLine").textContent = state.unlocked ? rec.line : "Unlock your results above to see which door we suggest for you.";
+    var needJv = (num(state.leaks[0].jobs) || num(state.leaks[1].jobs)) && !num(state.jobValue);
+    if (needJv) note.textContent = "Add your average job or client value above to count the jobs you're losing.";
+    else if (!hasNumbers()) note.textContent = "Fill in hours or lost jobs for at least one leak to see what it costs you.";
+    else note.textContent = "That's what these leaks cost before you fix them. Bring this number to your Score Review.";
+    var rec = recommendation();
+    $("doorMap").classList.toggle("rec", rec.door === "map");
+    $("doorFix").classList.toggle("rec", rec.door === "fix");
+    $("recLine").textContent = rec.line;
+    var btn = $("sendNums"), msg = $("sendMsg");
+    btn.disabled = !hasNumbers();
+    if (state.sentSig && state.sentSig === costSig()) { btn.textContent = "Sent to Michael"; btn.disabled = true; msg.textContent = "Michael has your numbers."; }
+    else { btn.textContent = state.sentSig ? "Send my updated numbers" : "Send my numbers to Michael"; msg.textContent = ""; }
   }
 
   function render() {
-    var yes = yesIdx(), answered = Object.keys(state.answers).length, score = yes.length;
+    var yes = yesIdx(), answered = answeredCount(), score = yes.length, band = bandIdx(score);
     $("score").innerHTML = score + "<small> / 11</small>";
     $("answered").textContent = answered + " of 11 answered";
     $("bar").style.width = (answered / 11 * 100) + "%";
-    var band = score <= 2 ? 0 : score <= 5 ? 1 : 2;
-    $("bandName").textContent = answered ? BANDS[band] : "Answer the questions below";
+    $("bandName").textContent = !answered ? "Answer the questions below" : state.unlocked ? BANDS[band] : (answered < 11 ? "Keep going" : "Unlock your results below");
     document.querySelectorAll(".bandcard").forEach(function (c) { c.classList.toggle("on", answered > 0 && +c.dataset.band === band); });
     QUESTIONS.forEach(function (_, i) {
       $("q" + (i + 1)).classList.toggle("yes", state.answers[i] === "yes");
@@ -498,6 +531,11 @@ footer a { color: #DCE3E8; }
     if (!answered) yw.innerHTML = '<p class="empty">Your leaks will show up here as you answer.</p>';
     else if (!yes.length) yw.innerHTML = '<p class="empty">No leaks so far. Nice work.</p>';
     else yw.innerHTML = '<div class="yeslist" aria-label="Your leaks">' + yes.map(function (i) { return '<span class="chip">#' + (i + 1) + ' ' + QUESTIONS[i][1] + '</span>'; }).join("") + '</div>';
+    if (!state.unlocked) {
+      $("gateSub").textContent = answered
+        ? "You found " + score + " leak" + (score === 1 ? "" : "s") + ". Enter your name and email to see what they're costing you and which next step fits."
+        : "Answer the 11 questions above, then enter your name and email to unlock your full results.";
+    }
     fillSelects(); renderCalc();
   }
 
@@ -506,25 +544,12 @@ footer a { color: #DCE3E8; }
   rateEl.addEventListener("input", function () { state.rate = rateEl.value; save(); renderCalc(); });
   jvEl.addEventListener("input", function () { state.jobValue = jvEl.value; save(); renderCalc(); });
 
-  function showUnlocked() {
-    $("leadForm").hidden = true;
-    $("doneMsg").hidden = false;
-    $("doneTitle").textContent = state.name ? "Thanks, " + state.name.split(" ")[0] + ". Your results are unlocked." : "Your results are unlocked.";
-    renderCalc();
-  }
-
   var form = $("leadForm");
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
-    var err = $("formErr"), nameEl = $("f_name"), emailEl = $("f_email");
-    err.hidden = true;
-    if (!nameEl.value.trim()) { err.textContent = "Please enter your name."; err.hidden = false; nameEl.focus(); return; }
-    if (!emailEl.value.trim() || !emailEl.checkValidity()) { err.textContent = "Please enter a valid email address, like name@business.com."; err.hidden = false; emailEl.focus(); return; }
-    var yes = yesIdx(), score = yes.length, answered = Object.keys(state.answers).length;
-    var band = score <= 2 ? 0 : score <= 5 ? 1 : 2;
-    var total = leakCost(0) + leakCost(1);
+  function fillHidden(stage) {
+    var yes = yesIdx(), score = yes.length, answered = answeredCount(), total = leakCost(0) + leakCost(1);
+    $("f_stage").value = stage;
     $("f_score").value = score + " / 11 (" + answered + " of 11 answered)";
-    $("f_band").value = answered ? BANDS[band] : "Not answered";
+    $("f_band").value = answered ? BANDS[bandIdx(score)] : "Not answered";
     $("f_yes").value = yes.length ? yes.map(function (i) { return "#" + (i + 1) + " " + QUESTIONS[i][1]; }).join("; ") : "None";
     $("f_rate").value = money(num(state.rate));
     $("f_jv").value = num(state.jobValue) ? money(num(state.jobValue)) : "Not entered";
@@ -533,28 +558,80 @@ footer a { color: #DCE3E8; }
       $("f_l" + (k + 1)).value = n ? n + " (" + (num(state.leaks[k].hours) || 0) + " hrs/mo, " + (num(state.leaks[k].jobs) || 0) + " jobs/mo)" : "Not chosen";
       $("f_l" + (k + 1) + "c").value = money(leakCost(k));
     });
-    $("f_month").value = money(total);
-    $("f_year").value = money(total * 12);
+    $("f_month").value = hasNumbers() ? money(total) : "Not entered yet";
+    $("f_year").value = hasNumbers() ? money(total * 12) : "Not entered yet";
     var rec = recommendation();
     $("f_rec").value = rec.door === "fix" ? "The 30-Day Fix" : rec.door === "map" ? "The Money Map" : "Not enough answers";
-    $("f_subject").value = "Leak Finder: " + nameEl.value.trim() + " scored " + score + "/11 (" + money(total) + "/mo)";
-    var btn = $("submitBtn");
-    btn.disabled = true; btn.textContent = "Sending…";
-    fetch("/", {
+    var who = $("f_name").value.trim() || state.name;
+    $("f_subject").value = stage === "Unlocked results"
+      ? "Leak Finder: " + who + " scored " + score + "/11"
+      : "Leak Finder numbers: " + who + " (" + money(total) + "/mo)";
+  }
+  function post() {
+    return fetch("/", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams(new FormData(form)).toString()
-    }).then(function (res) {
-      if (!res.ok) throw new Error("status " + res.status);
-      state.unlocked = true; state.name = nameEl.value.trim(); save(); showUnlocked();
+    }).then(function (res) { if (!res.ok) throw new Error("status " + res.status); });
+  }
+
+  function showUnlocked(scroll) {
+    form.hidden = true;
+    $("doneMsg").hidden = false;
+    $("doneTitle").textContent = state.name ? "Thanks, " + state.name.split(" ")[0] + ". Your results are unlocked." : "Your results are unlocked.";
+    $("results").hidden = false;
+    document.querySelector(".teaser").hidden = true;
+    document.querySelector(".gets").hidden = true;
+    $("gateSub").hidden = true;
+    render();
+    if (scroll) $("s2").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var err = $("formErr"), nameEl = $("f_name"), emailEl = $("f_email");
+    err.hidden = true;
+    if (!answeredCount()) { err.textContent = "Answer the questions above first, so your results have something to show."; err.hidden = false; $("q1").scrollIntoView({ behavior: "smooth" }); return; }
+    if (!nameEl.value.trim()) { err.textContent = "Please enter your name."; err.hidden = false; nameEl.focus(); return; }
+    if (!emailEl.value.trim() || !emailEl.checkValidity()) { err.textContent = "Please enter a valid email address, like name@business.com."; err.hidden = false; emailEl.focus(); return; }
+    fillHidden("Unlocked results");
+    var btn = $("submitBtn");
+    btn.disabled = true; btn.textContent = "Unlocking…";
+    post().then(function () {
+      state.unlocked = true; state.name = nameEl.value.trim(); state.email = emailEl.value.trim(); state.business = $("f_business").value.trim(); save(); showUnlocked(true);
     }).catch(function () {
-      err.textContent = "Your results didn't send. Check your connection and try again.";
+      err.textContent = "That didn't go through. Check your connection and try again.";
       err.hidden = false;
-    }).then(function () { btn.disabled = false; btn.textContent = "Show my results"; });
+    }).then(function () { btn.disabled = false; btn.textContent = "Unlock my results"; });
   });
 
+  $("sendNums").addEventListener("click", function () {
+    var btn = this, msg = $("sendMsg");
+    fillHidden("Cost estimate");
+    btn.disabled = true; btn.textContent = "Sending…";
+    post().then(function () {
+      state.sentSig = costSig(); save(); renderCalc();
+    }).catch(function () {
+      btn.disabled = false; btn.textContent = "Send my numbers to Michael";
+      msg.textContent = "That didn't go through. Check your connection and try again.";
+    });
+  });
+
+  // If someone fills in numbers and leaves without sending, send them once in the background.
+  document.addEventListener("visibilitychange", function () {
+    if (document.visibilityState !== "hidden" || !state.unlocked || !hasNumbers() || state.sentSig === costSig()) return;
+    if (!$("f_email").value) return;
+    fillHidden("Cost estimate (left the page)");
+    try {
+      if (navigator.sendBeacon("/", new URLSearchParams(new FormData(form)))) { state.sentSig = costSig(); save(); }
+    } catch (e) {}
+  });
+
+  if (state.name) $("f_name").value = state.name;
+  if (state.email) $("f_email").value = state.email;
+  if (state.business) $("f_business").value = state.business;
   buildCalc(); render();
-  if (state.unlocked) showUnlocked();
+  if (state.unlocked) showUnlocked(false);
 })();
 </script>
 </body>
