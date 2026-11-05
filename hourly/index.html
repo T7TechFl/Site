@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<title>What's Your Hour Worth? | T7 Technology Solutions</title>
+<meta name="description" content="A free 2-minute calculator for Jacksonville small business owners. See what you really pay yourself per hour, and what admin time is costing you.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+/* T7 site look: dark header band, cream worksheet. One input card drives a free headline number; the deeper breakdown unlocks with an email. Single brand look on purpose. */
+:root {
+  --ink: #13202B; --ink-2: #1C2C39; --cream: #F6F6F2; --paper: #FFFFFF; --tint: #E8EEEB;
+  --accent: #0B6B58; --accent-dark: #084C3F; --mint: #8FD6C2; --muted: #4A5864; --body: #2E3D48;
+  --line: #D5DBD7; --on-ink: #F6F6F2; --on-ink-muted: #C9D3DA; --flag: #F3E3C3; --flag-ink: #5C4410;
+  --display: 'Bricolage Grotesque', 'Segoe UI', system-ui, sans-serif;
+  --text: 'Manrope', 'Segoe UI', system-ui, sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--cream); color: var(--ink); font-family: var(--text); font-size: 17px; line-height: 1.55; }
+.wrap { max-width: 880px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { font-family: var(--display); font-weight: 700; letter-spacing: -0.02em; text-wrap: balance; margin: 0; }
+p { margin: 0; }
+a { color: var(--accent); } a:hover { color: var(--accent-dark); }
+.eyebrow { font-size: 13px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.band { background: var(--ink); color: var(--on-ink); }
+.band .eyebrow, .dark .eyebrow { color: var(--mint); }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.top { padding-block: 24px 48px; display: flex; flex-direction: column; gap: 36px; }
+.brand { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.logo { display: flex; align-items: center; gap: 10px; color: var(--on-ink); text-decoration: none; }
+.logo:hover { color: var(--on-ink); }
+.logo > span { display: flex; flex-direction: column; font-weight: 800; font-size: 18px; letter-spacing: -0.03em; line-height: 1; }
+.pill { padding: 6px 14px; border-radius: 999px; background: var(--mint); color: var(--ink); font-size: 13px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; }
+.hero { display: flex; flex-direction: column; gap: 14px; }
+.hero h1 { font-size: clamp(44px, 8.5vw, 76px); line-height: 1; letter-spacing: -0.03em; max-width: 14ch; }
+.hero p { font-size: clamp(18px, 2.4vw, 21px); color: #DCE3E8; font-weight: 600; max-width: 44ch; }
+.hero small { color: var(--on-ink-muted); font-size: 15px; }
+
+section.block { padding-block: 44px 8px; display: flex; flex-direction: column; gap: 18px; }
+.block-head { display: flex; flex-direction: column; gap: 6px; }
+.block-head h2 { font-size: clamp(28px, 4.4vw, 38px); line-height: 1.08; }
+.block-head p.lede { color: var(--muted); max-width: 62ch; }
+
+.card { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.example { align-self: flex-start; display: flex; gap: 8px; align-items: center; padding: 6px 12px; border-radius: 8px; background: var(--flag); color: var(--flag-ink); font-size: 14px; font-weight: 700; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.field { display: flex; flex-direction: column; gap: 6px; font-size: 15px; font-weight: 700; }
+.field .hint { font-weight: 500; color: var(--muted); font-size: 13.5px; }
+.field input { min-height: 48px; padding: 0 12px; border: 1px solid #A9B4B0; border-radius: 8px; font: inherit; font-weight: 600; background: var(--paper); color: var(--ink); width: 100%; font-variant-numeric: tabular-nums; }
+.field input:focus-visible { outline: 3px solid var(--mint); outline-offset: 1px; border-color: var(--accent); }
+.unit { display: flex; align-items: center; border: 1px solid #A9B4B0; border-radius: 8px; background: var(--paper); }
+.unit:focus-within { outline: 3px solid var(--mint); outline-offset: 1px; border-color: var(--accent); }
+.unit span { padding: 0 12px; color: var(--muted); font-weight: 700; white-space: nowrap; }
+.unit input { border: 0; min-height: 46px; outline: none !important; }
+
+.choices { display: flex; flex-wrap: wrap; gap: 8px; }
+.choices input { position: absolute; opacity: 0; pointer-events: none; }
+.choices label { min-height: 44px; padding: 0 16px; display: inline-flex; align-items: center; border: 2px solid var(--ink); border-radius: 8px; background: var(--paper); font-weight: 800; font-size: 15px; cursor: pointer; }
+.choices label:hover { background: var(--tint); }
+.choices input:checked + label { background: var(--ink); color: var(--on-ink); }
+.choices input:focus-visible + label { outline: 3px solid var(--mint); outline-offset: 2px; }
+fieldset.field { border: 0; margin: 0; padding: 0; min-width: 0; }
+fieldset.field legend { padding: 0; margin-bottom: 6px; }
+.define { background: var(--tint); border-radius: 12px; padding: 14px 16px; font-size: 15px; color: var(--body); }
+.define b { color: var(--ink); }
+.answer { background: var(--ink); color: var(--on-ink); border-radius: 16px; padding: 28px; display: flex; flex-wrap: wrap; gap: 18px 40px; align-items: center; }
+.answer .big { display: flex; flex-direction: column; gap: 4px; }
+.answer .big span { font-size: 14px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--mint); }
+.answer .big strong { font-family: var(--display); font-size: clamp(56px, 11vw, 92px); line-height: .95; color: var(--on-ink); font-variant-numeric: tabular-nums; }
+.answer .big strong small { font-size: .38em; color: var(--on-ink-muted); }
+.answer p { flex: 1 1 260px; color: var(--on-ink-muted); font-size: 16px; }
+.answer p b { color: var(--on-ink); }
+
+.dark { background: var(--ink); color: var(--on-ink); border-radius: 16px; padding: 28px; display: flex; flex-direction: column; gap: 18px; }
+.dark h2 { font-size: clamp(26px, 4vw, 34px); line-height: 1.1; }
+.dark .sub { color: var(--on-ink-muted); max-width: 58ch; }
+.teaser { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; }
+.tz { background: var(--ink-2); border: 1px solid #2E3D48; border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: column; gap: 6px; }
+.tz-label { font-size: 13px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--mint); }
+.tz-blur { font-family: var(--display); font-weight: 700; font-size: 26px; line-height: 1.1; filter: blur(9px); user-select: none; }
+.dark form { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+.dark .field { color: var(--on-ink); }
+.dark .field input { border-color: #4A5B68; }
+.full { grid-column: 1 / -1; }
+.check { display: flex; gap: 10px; align-items: flex-start; font-size: 15px; color: #E4EAEE; font-weight: 600; cursor: pointer; }
+.check input { width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--mint); flex: none; }
+.fine { font-size: 13.5px; color: var(--on-ink-muted); }
+.err { color: #FFB4A8; font-weight: 700; font-size: 15px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; min-height: 52px; padding: 0 24px; border-radius: 8px; background: var(--accent); color: #fff; text-decoration: none; border: 0; font: inherit; font-weight: 800; cursor: pointer; }
+.btn:hover { background: var(--accent-dark); color: #fff; }
+.btn:focus-visible { outline: 3px solid var(--mint); outline-offset: 2px; }
+.btn[disabled] { opacity: .6; cursor: progress; }
+.btn.light { background: var(--on-ink); color: var(--ink); }
+.btn.light:hover { background: #fff; color: var(--ink); }
+.btn.outline { background: transparent; border: 2px solid var(--ink); color: var(--ink); }
+.btn.outline:hover { background: var(--tint); color: var(--ink); }
+.done strong { font-family: var(--display); font-size: 26px; color: var(--mint); }
+
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.stat { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 22px 24px; display: flex; flex-direction: column; gap: 8px; }
+.stat .k { font-size: 13px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
+.stat strong { font-family: var(--display); font-size: clamp(34px, 5vw, 44px); line-height: 1; font-variant-numeric: tabular-nums; }
+.stat p { font-size: 15px; color: var(--body); }
+.stat .field { margin-top: 4px; }
+
+.week { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 22px 24px; display: flex; flex-direction: column; gap: 12px; }
+.week h3 { font-family: var(--text); font-size: 17px; font-weight: 800; letter-spacing: 0; }
+.bar { display: flex; height: 44px; border-radius: 10px; overflow: hidden; background: var(--tint); }
+.bar i { display: flex; align-items: center; padding: 0 12px; font-style: normal; font-size: 14px; font-weight: 800; white-space: nowrap; overflow: hidden; transition: width .25s ease; }
+.bar .paid { background: var(--accent); color: #fff; }
+.bar .busy { background: #D9C27E; color: var(--ink); }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 14.5px; color: var(--body); }
+.legend span { display: inline-flex; align-items: center; gap: 8px; }
+.legend span::before { content: ""; width: 12px; height: 12px; border-radius: 3px; background: var(--c); }
+
+.next { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+.next .box { border-radius: 16px; padding: 24px; display: flex; flex-direction: column; gap: 12px; }
+.next .box h3 { font-size: 26px; line-height: 1.1; }
+.next .box p { font-size: 16px; }
+.next .lf { background: var(--tint); }
+.next .lf p { color: var(--body); }
+.next .sr { background: var(--ink); color: var(--on-ink); }
+.next .sr p { color: var(--on-ink-muted); }
+.next .box .btn { align-self: flex-start; margin-top: auto; }
+
+.note { font-size: 14px; color: var(--muted); padding-block: 8px 32px; }
+footer { background: #0C151D; color: #AEB9C1; font-size: 14px; margin-top: 40px; }
+footer .wrap { padding-block: 22px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 20px; }
+footer a { color: #DCE3E8; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
+</style>
+</head>
+<body>
+
+<header class="band">
+  <div class="wrap top">
+    <div class="brand">
+      <a class="logo" href="/" aria-label="T7 Technology Solutions home">
+        <svg width="44" height="44" viewBox="0 0 120 120" aria-hidden="true"><rect x="4" y="4" width="112" height="112" rx="28" fill="#0B6B58"></rect><path d="M28 38 H90 L64 92 M45 38 V92" fill="none" stroke="#FFFFFF" stroke-width="12" stroke-linejoin="round" stroke-linecap="round"></path></svg>
+        <span><span>Technology</span><span>Solutions</span></span>
+      </a>
+      <span class="pill">Free calculator</span>
+    </div>
+    <div class="hero">
+      <p class="eyebrow">For Jacksonville small business owners</p>
+      <h1>What's your hour really worth?</h1>
+      <p>Count every hour you actually work, including evenings and paperwork, and see what you really pay yourself.</p>
+      <small>Takes 2 minutes. Rough numbers are fine.</small>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="wrap block" aria-labelledby="s1">
+    <div class="block-head">
+      <p class="eyebrow">Step 1</p>
+      <h2 id="s1">Your numbers</h2>
+      <p class="lede">Use the last 12 months. Your bank statements or QuickBooks profit and loss report will get you close.</p>
+    </div>
+    <div class="card">
+      <p class="example" id="exampleFlag">Example numbers shown. Replace them with yours.</p>
+      <div class="grid">
+        <label class="field" for="revenue">Revenue, last 12 months <span class="hint">Everything customers paid you.</span>
+          <span class="unit"><span>$</span><input id="revenue" type="number" inputmode="decimal" min="0" step="1000"></span></label>
+        <label class="field" for="expenses">Business expenses, last 12 months <span class="hint">Rent, payroll, supplies, software. Leave out what you pay yourself.</span>
+          <span class="unit"><span>$</span><input id="expenses" type="number" inputmode="decimal" min="0" step="1000"></span></label>
+        <label class="field" for="hours">Hours you work per week <span class="hint">All of them: jobs, evenings, weekends, email and paperwork.</span>
+          <span class="unit"><input id="hours" type="number" inputmode="decimal" min="0" max="120" step="1"><span>hrs / week</span></span></label>
+        <label class="field" for="weeks">Weeks you work per year <span class="hint">52 minus vacation and sick weeks.</span>
+          <span class="unit"><input id="weeks" type="number" inputmode="decimal" min="1" max="52" step="1"><span>weeks</span></span></label>
+        <p class="define full"><b>Admin time</b> is the work that keeps your business running but doesn't bring in money: scheduling, invoicing, chasing payments, data entry, paperwork, and answering the same questions over and over.</p>
+        <fieldset class="field full">
+          <legend>Who handles your admin work?</legend>
+          <div class="choices">
+            <input type="radio" name="who" id="who_me" value="me"><label for="who_me">Mostly me</label>
+            <input type="radio" name="who" id="who_pay" value="pay"><label for="who_pay">Someone I pay</label>
+            <input type="radio" name="who" id="who_both" value="both"><label for="who_both">Both of us</label>
+          </div>
+        </fieldset>
+        <label class="field" for="busy" id="ownerAdminField">Your admin hours per week <span class="hint">Part of the weekly hours above. Your best guess.</span>
+          <span class="unit"><input id="busy" type="number" inputmode="decimal" min="0" step="1"><span>hrs / week</span></span></label>
+        <label class="field" for="staffHours" id="staffHoursField">Admin hours you pay for per week <span class="hint">Your office help, bookkeeper or VA, added together.</span>
+          <span class="unit"><input id="staffHours" type="number" inputmode="decimal" min="0" step="1"><span>hrs / week</span></span></label>
+        <label class="field" for="staffRate" id="staffRateField">What you pay for that help <span class="hint">Their average hourly cost to you.</span>
+          <span class="unit"><span>$</span><input id="staffRate" type="number" inputmode="decimal" min="0" step="1"><span>/ hr</span></span></label>
+      </div>
+    </div>
+    <div class="answer" aria-live="polite">
+      <div class="big"><span>Your real hourly pay</span><strong id="hourly">$0<small> / hr</small></strong></div>
+      <p id="answerLine">Fill in your numbers to see what you really earn per hour.</p>
+    </div>
+  </section>
+
+  <section class="wrap block" aria-labelledby="sGate">
+    <div class="dark" id="gate">
+      <div><p class="eyebrow">Step 2 · Your breakdown</p><h2 id="sGate">See what admin time is really costing you</h2></div>
+      <p class="sub" id="gateSub">Enter your name and email to see what admin time costs your business each year, and what your hour is worth with it cut in half.</p>
+      <div class="teaser" aria-hidden="true">
+        <div class="tz"><span class="tz-label">Admin time costs you</span><span class="tz-blur">$19,600 / yr</span></div>
+        <div class="tz"><span class="tz-label">Your hour, admin halved</span><span class="tz-blur">$37 / hr</span></div>
+        <div class="tz"><span class="tz-label">Time you'd get back</span><span class="tz-blur">7 workweeks</span></div>
+      </div>
+      <form name="hour-worth" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="leadForm" novalidate>
+        <input type="hidden" name="form-name" value="hour-worth">
+        <input type="hidden" name="subject" id="f_subject" value="New hourly value result">
+        <p class="visually-hidden"><label>Don't fill this out: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+        <label class="field" for="f_name">Your name<input id="f_name" name="name" type="text" autocomplete="name" required></label>
+        <label class="field" for="f_email">Email<input id="f_email" name="email" type="email" autocomplete="email" required></label>
+        <label class="field full" for="f_business">Business name <span class="hint" style="color: var(--on-ink-muted)">Optional</span><input id="f_business" name="business" type="text" autocomplete="organization"></label>
+        <label class="check full" for="f_optin"><input id="f_optin" name="marketing_opt_in" type="checkbox" value="Yes"> Send me occasional tips from T7 on saving time and money. Unsubscribe anytime.</label>
+        <input type="hidden" name="revenue" id="f_revenue">
+        <input type="hidden" name="expenses" id="f_expenses">
+        <input type="hidden" name="owner_profit" id="f_profit">
+        <input type="hidden" name="hours_per_week" id="f_hours">
+        <input type="hidden" name="weeks_per_year" id="f_weeks">
+        <input type="hidden" name="admin_handled_by" id="f_who">
+        <input type="hidden" name="owner_admin_hours_per_week" id="f_busy">
+        <input type="hidden" name="paid_admin_hours_per_week" id="f_staffHours">
+        <input type="hidden" name="paid_admin_hourly_cost" id="f_staffRate">
+        <input type="hidden" name="paid_admin_cost_per_year" id="f_staffCost">
+        <input type="hidden" name="real_hourly_pay" id="f_hourly">
+        <input type="hidden" name="total_admin_cost_per_year" id="f_busycost">
+        <input type="hidden" name="hourly_with_admin_halved" id="f_halved">
+        <div class="full" style="display: flex; flex-direction: column; gap: 10px">
+          <p class="err" id="formErr" role="alert" hidden></p>
+          <button class="btn light" type="submit" id="submitBtn" style="align-self: flex-start">Show my breakdown</button>
+          <p class="fine">Your email is used to follow up about your results. Tips only if you check the box.</p>
+        </div>
+      </form>
+      <div class="done" id="doneMsg" hidden><strong id="doneTitle">Your breakdown is unlocked.</strong></div>
+    </div>
+  </section>
+
+  <div id="results" hidden>
+    <section class="wrap block" aria-labelledby="s3">
+      <div class="block-head">
+        <p class="eyebrow">Step 3</p>
+        <h2 id="s3">Where your hours go</h2>
+      </div>
+      <div class="week">
+        <h3 id="weekTitle">Your work week</h3>
+        <div class="bar" aria-hidden="true"><i class="paid" id="barPaid"></i><i class="busy" id="barBusy"></i></div>
+        <div class="legend"><span style="--c: #0B6B58" id="lgPaid">Customer work</span><span style="--c: #D9C27E" id="lgBusy">Admin time</span></div>
+      </div>
+      <div class="stats">
+        <div class="stat">
+          <span class="k">Admin time costs you</span>
+          <strong id="busyCost">$0</strong>
+          <p id="busyCostLine">a year, at your real hourly pay.</p>
+        </div>
+        <div class="stat">
+          <span class="k">Cut admin time in half</span>
+          <strong id="halved">$0 / hr</strong>
+          <p id="halvedLine">Same profit, fewer hours worked.</p>
+        </div>
+        <div class="stat">
+          <span class="k" id="thirdK">Or hand it off</span>
+          <strong id="handoff">$0</strong>
+          <p id="handoffLine">saved per year by paying someone else to do it.</p>
+          <label class="field" for="helperRate" id="helperField">What you'd pay a helper <span class="unit"><span>$</span><input id="helperRate" type="number" inputmode="decimal" min="0" step="1" value="22"><span>/ hr</span></span></label>
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap block" aria-labelledby="s4">
+      <div class="block-head">
+        <p class="eyebrow">Step 4 · Your next step</p>
+        <h2 id="s4">Find out which admin work to fix first</h2>
+      </div>
+      <div class="next">
+        <div class="box lf">
+          <h3>The Leak Finder</h3>
+          <p>11 yes-or-no questions that show where your money and hours leak. Your hourly pay carries over, so the dollar figures use your real number.</p>
+          <a class="btn outline" href="/leak-finder" id="toLeak">Find my leaks</a>
+        </div>
+        <div class="box sr">
+          <h3>Free 15-minute Score Review</h3>
+          <p>Bring your number. Michael will tell you where he'd start, or tell you honestly if nothing's worth fixing yet. No pitch.</p>
+          <a class="btn" href="/#contact">Request my Score Review</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <p class="wrap note">This calculator gives a rough estimate to help you plan. It isn't tax or accounting advice.</p>
+</main>
+
+<footer>
+  <div class="wrap"><span>© 2026 T7 Technology Solutions · Jacksonville, FL</span><a href="/">t7techfl.com</a></div>
+</footer>
+
+<script>
+(function () {
+  var KEY = "t7-hour-worth-v2";
+  var EXAMPLE = { revenue: "240000", expenses: "150000", hours: "55", weeks: "50", who: "me", busy: "12", staffHours: "", staffRate: "" };
+  var state = { inputs: Object.assign({}, EXAMPLE), example: true, helperRate: "22", unlocked: false, name: "", email: "", business: "" };
+  try { var saved = JSON.parse(localStorage.getItem(KEY) || "null"); if (saved && saved.inputs) state = Object.assign(state, saved); } catch (e) {}
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+  function $(id) { return document.getElementById(id); }
+  function num(v) { var n = parseFloat(v); return isFinite(n) && n > 0 ? n : 0; }
+  function money(n) { return "$" + Math.round(n).toLocaleString("en-US"); }
+  var FIELDS = ["revenue", "expenses", "hours", "weeks", "busy", "staffHours", "staffRate"];
+  var WHO = { me: "Mostly me", pay: "Someone I pay", both: "Both of us" };
+
+  function calc() {
+    var i = state.inputs, who = i.who || "me";
+    var profit = num(i.revenue) - num(i.expenses);
+    var hrs = num(i.hours), wks = Math.min(num(i.weeks), 52);
+    var own = who === "pay" ? 0 : Math.min(num(i.busy), hrs);
+    var staffH = who === "me" ? 0 : num(i.staffHours);
+    var staffR = who === "me" ? 0 : num(i.staffRate);
+    var hourly = hrs * wks ? profit / (hrs * wks) : 0;
+    var ownCost = Math.max(hourly, 0) * own * wks;
+    var staffCost = staffH * staffR * wks; // already inside expenses
+    var halvedHours = (hrs - own / 2) * wks;
+    var helper = who === "both" && staffR ? staffR : num(state.helperRate);
+    return {
+      who: who, profit: profit, hrs: hrs, wks: wks, own: own, staffH: staffH, staffR: staffR, hourly: hourly,
+      ownCost: ownCost, staffCost: staffCost, totalCost: ownCost + staffCost,
+      halved: halvedHours ? (profit + staffCost / 2) / halvedHours : 0,
+      weeksBack: own * wks / 2 / 40,
+      helper: helper,
+      handoff: Math.max(0, hourly - helper) * own * wks,
+      ready: !!(num(i.revenue) && hrs && wks)
+    };
+  }
+
+  function render() {
+    var r = calc();
+    $("exampleFlag").hidden = !state.example;
+    ["me", "pay", "both"].forEach(function (w) { $("who_" + w).checked = r.who === w; });
+    $("ownerAdminField").hidden = r.who === "pay";
+    $("staffHoursField").hidden = r.who === "me";
+    $("staffRateField").hidden = r.who === "me";
+
+    var line = $("answerLine");
+    if (!r.ready) { $("hourly").innerHTML = "$0<small> / hr</small>"; line.textContent = "Fill in your numbers to see what you really earn per hour."; }
+    else if (r.profit <= 0) { $("hourly").innerHTML = "$0<small> / hr</small>"; line.textContent = "Your expenses are higher than your revenue, so you're not paying yourself yet. That's exactly where a fresh look at the numbers helps."; }
+    else {
+      $("hourly").innerHTML = money(r.hourly) + "<small> / hr</small>";
+      line.innerHTML = "You keep <b>" + money(r.profit) + "</b> a year for about <b>" + Math.round(r.hrs * r.wks).toLocaleString("en-US") + " hours</b> of work, before taxes." + (state.example ? " These are example numbers." : "");
+    }
+
+    var pct = r.hrs ? Math.round(r.own / r.hrs * 100) : 0;
+    $("barPaid").style.width = (100 - pct) + "%";
+    $("barBusy").style.width = pct + "%";
+    $("barPaid").textContent = r.hrs ? Math.round(r.hrs - r.own) + " hrs" : "";
+    $("barBusy").textContent = r.own ? Math.round(r.own) + " hrs" : "";
+    $("weekTitle").textContent = "Your " + Math.round(r.hrs) + "-hour work week";
+    $("lgPaid").textContent = "Money-making work · " + (100 - pct) + "%";
+    $("lgBusy").textContent = "Your admin time · " + pct + "%";
+
+    $("busyCost").textContent = money(r.totalCost);
+    var parts = [];
+    if (r.own) parts.push(money(r.ownCost) + " of your own time (" + Math.round(r.own * r.wks).toLocaleString("en-US") + " hours)");
+    if (r.staffCost) parts.push(money(r.staffCost) + " you pay others");
+    $("busyCostLine").textContent = parts.length ? "a year: " + parts.join(", plus ") + "." : "a year. Add your admin hours above to see this.";
+
+    $("halved").textContent = money(r.halved) + " / hr";
+    var hl = r.hourly > 0 ? "Up " + Math.round((r.halved / r.hourly - 1) * 100) + "% with the same revenue" : "Same revenue, less admin";
+    if (r.weeksBack >= 1) hl += ", and about " + Math.round(r.weeksBack) + " workweeks back each year";
+    if (r.staffCost) hl += ". Includes " + money(r.staffCost / 2) + " a year saved on paid admin";
+    $("halvedLine").textContent = hl + ".";
+
+    var third = $("handoff"), thirdLine = $("handoffLine");
+    $("helperField").hidden = r.who !== "me";
+    if (r.who === "pay") {
+      $("thirdK").textContent = "Automate what you pay for";
+      third.textContent = money(r.staffCost / 2);
+      thirdLine.textContent = r.staffCost ? "saved per year if automation cut your paid admin hours in half, without letting anyone go." : "Add your paid admin hours and rate above to see this.";
+    } else {
+      $("thirdK").textContent = r.who === "both" ? "Hand yours to your helper" : "Or hand it off";
+      third.textContent = money(r.handoff);
+      thirdLine.textContent = r.handoff > 0
+        ? "saved per year if " + (r.who === "both" ? "your helper" : "a helper") + " did your admin at " + money(r.helper) + "/hr while you do paid work."
+        : (r.own ? "Handing it off wouldn't pay at that rate. Automating it is the cheaper fix." : "Add your admin hours above to see this.");
+    }
+  }
+
+  FIELDS.forEach(function (f) {
+    var el = $(f);
+    el.value = state.inputs[f] || "";
+    el.addEventListener("input", function () {
+      state.inputs[f] = el.value;
+      clearExample(f);
+      save(); render();
+    });
+  });
+  function clearExample(except) {
+    if (!state.example) return;
+    state.example = false;
+    FIELDS.forEach(function (g) { if (g !== except && state.inputs[g] === EXAMPLE[g] && EXAMPLE[g]) { state.inputs[g] = ""; $(g).value = ""; } });
+  }
+  ["me", "pay", "both"].forEach(function (w) {
+    $("who_" + w).addEventListener("change", function () { state.inputs.who = w; clearExample("who"); save(); render(); });
+  });
+  var hr = $("helperRate");
+  hr.value = state.helperRate;
+  hr.addEventListener("input", function () { state.helperRate = hr.value; save(); render(); });
+
+  // Carry the result into the Leak Finder's hourly value.
+  $("toLeak").addEventListener("click", function () {
+    var r = calc();
+    if (!(r.hourly > 0)) return;
+    try {
+      var lk = "t7-leak-finder-v2";
+      var lf = JSON.parse(localStorage.getItem(lk) || "null") || { answers: {}, leaks: [{ q: "", hours: "", jobs: "" }, { q: "", hours: "", jobs: "" }], rate: "50", jobValue: "", unlocked: false, name: "", email: "", business: "", sentSig: "" };
+      lf.rate = String(Math.round(r.hourly));
+      if (!lf.name && state.name) { lf.name = state.name; lf.email = state.email; lf.business = state.business; }
+      localStorage.setItem(lk, JSON.stringify(lf));
+    } catch (e) {}
+  });
+
+  function showUnlocked(scroll) {
+    $("leadForm").hidden = true;
+    document.querySelector(".teaser").hidden = true;
+    $("gateSub").hidden = true;
+    $("doneMsg").hidden = false;
+    $("doneTitle").textContent = state.name ? "Thanks, " + state.name.split(" ")[0] + ". Your breakdown is below." : "Your breakdown is below.";
+    $("results").hidden = false;
+    render();
+    if (scroll) $("s3").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  var form = $("leadForm");
+  var onSite = /(^|\.)t7techfl\.com$|netlify\.app$/.test(location.hostname);
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var err = $("formErr"), nameEl = $("f_name"), emailEl = $("f_email"), r = calc();
+    err.hidden = true;
+    if (!r.ready || state.example) { err.textContent = "Enter your own numbers above first, so your breakdown is about your business."; err.hidden = false; $("revenue").focus(); return; }
+    if (!nameEl.value.trim()) { err.textContent = "Please enter your name."; err.hidden = false; nameEl.focus(); return; }
+    if (!emailEl.value.trim() || !emailEl.checkValidity()) { err.textContent = "Please enter a valid email address, like name@business.com."; err.hidden = false; emailEl.focus(); return; }
+    var i = state.inputs;
+    $("f_revenue").value = money(num(i.revenue));
+    $("f_expenses").value = money(num(i.expenses));
+    $("f_profit").value = money(r.profit);
+    $("f_hours").value = r.hrs;
+    $("f_weeks").value = r.wks;
+    $("f_who").value = WHO[r.who];
+    $("f_busy").value = r.own;
+    $("f_staffHours").value = r.staffH;
+    $("f_staffRate").value = r.staffR ? money(r.staffR) + " / hr" : "";
+    $("f_staffCost").value = money(r.staffCost) + " / yr";
+    $("f_hourly").value = money(r.hourly) + " / hr";
+    $("f_busycost").value = money(r.totalCost) + " / yr";
+    $("f_halved").value = money(r.halved) + " / hr";
+    $("f_subject").value = "Hourly value: " + nameEl.value.trim() + " earns " + money(r.hourly) + "/hr";
+    var btn = $("submitBtn");
+    btn.disabled = true; btn.textContent = "Unlocking…";
+    var send = onSite
+      ? fetch("/", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams(new FormData(form)).toString() })
+          .then(function (res) { if (!res.ok) throw new Error("status " + res.status); })
+      : Promise.resolve(); // preview outside the live site: nothing is sent
+    send.then(function () {
+      state.unlocked = true; state.name = nameEl.value.trim(); state.email = emailEl.value.trim(); state.business = $("f_business").value.trim();
+      save(); showUnlocked(true);
+    }).catch(function () {
+      err.textContent = "That didn't go through. Check your connection and try again."; err.hidden = false;
+    }).then(function () { btn.disabled = false; btn.textContent = "Show my breakdown"; });
+  });
+
+  if (state.name) $("f_name").value = state.name;
+  if (state.email) $("f_email").value = state.email;
+  if (state.business) $("f_business").value = state.business;
+  render();
+  if (state.unlocked) showUnlocked(false);
+})();
+</script>
+</body>
+</html>
