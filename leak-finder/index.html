@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<title>The Leak Finder | T7 Technology Solutions</title>
+<meta name="description" content="A free 10-minute scorecard for Jacksonville small business owners. Find the 11 places your business quietly loses money and hours, and put a dollar figure on them.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&amp;family=Manrope:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+/* T7 website look: dark ink bands bookend a cream worksheet. Questions and score are free; dollar figures and the recommendation unlock with an email. */
+:root {
+  --ink: #13202B;
+  --ink-2: #1C2C39;
+  --cream: #F6F6F2;
+  --paper: #FFFFFF;
+  --tint: #E8EEEB;
+  --accent: #0B6B58;
+  --accent-dark: #084C3F;
+  --mint: #8FD6C2;
+  --muted: #4A5864;
+  --body: #2E3D48;
+  --line: #D5DBD7;
+  --on-ink: #F6F6F2;
+  --on-ink-muted: #C9D3DA;
+  --error: #A3261B;
+  --display: 'Bricolage Grotesque', 'Segoe UI', system-ui, sans-serif;
+  --text: 'Manrope', 'Segoe UI', system-ui, sans-serif;
+  color-scheme: light;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--cream); color: var(--ink); font-family: var(--text); font-size: 17px; line-height: 1.55; }
+.wrap { max-width: 880px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+h1, h2, h3 { font-family: var(--display); font-weight: 700; letter-spacing: -0.02em; text-wrap: balance; margin: 0; }
+p { margin: 0; }
+a { color: var(--accent); } a:hover { color: var(--accent-dark); }
+.eyebrow { font-size: 13px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+.band { background: var(--ink); color: var(--on-ink); }
+.band .eyebrow { color: var(--mint); }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.top { padding-block: 24px 48px; display: flex; flex-direction: column; gap: 36px; }
+.brand { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.logo { display: flex; align-items: center; gap: 10px; color: var(--on-ink); text-decoration: none; }
+.logo:hover { color: var(--on-ink); }
+.logo > span { display: flex; flex-direction: column; font-weight: 800; font-size: 18px; letter-spacing: -0.03em; line-height: 1; }
+.pill { padding: 6px 14px; border-radius: 999px; background: var(--mint); color: var(--ink); font-size: 13px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; }
+.hero { display: flex; flex-direction: column; gap: 14px; }
+.hero h1 { font-size: clamp(48px, 9vw, 80px); line-height: 0.98; letter-spacing: -0.03em; }
+.hero p { font-size: clamp(18px, 2.4vw, 22px); color: #DCE3E8; font-weight: 600; max-width: 34ch; }
+.hero small { color: var(--on-ink-muted); font-size: 15px; }
+
+.scorebar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--ink-2); color: var(--on-ink); border-bottom: 1px solid #2E3D48; }
+.scorebar .wrap { display: flex; align-items: center; gap: 16px; padding-block: 12px; flex-wrap: wrap; }
+.scorebar .num { font-family: var(--display); font-size: 30px; font-weight: 700; line-height: 1; color: var(--mint); font-variant-numeric: tabular-nums; }
+.scorebar .num small { font-size: 18px; color: var(--on-ink-muted); }
+.scorebar .meta { display: flex; flex-direction: column; font-size: 14px; color: var(--on-ink-muted); line-height: 1.3; }
+.scorebar .meta strong { color: var(--on-ink); font-size: 15px; }
+.track { flex: 1 1 160px; min-width: 120px; height: 8px; border-radius: 99px; background: #2E3D48; overflow: hidden; }
+.track i { display: block; height: 100%; width: 0; background: var(--mint); transition: width .25s ease; }
+
+section.block { padding-block: 48px 8px; display: flex; flex-direction: column; gap: 20px; }
+.block-head { display: flex; flex-direction: column; gap: 6px; }
+.block-head h2 { font-size: clamp(30px, 4.6vw, 40px); line-height: 1.08; }
+.block-head p.lede { color: var(--muted); max-width: 62ch; }
+.qs { list-style: none; margin: 0; padding: 0; border-top: 2px solid var(--ink); }
+.q { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; gap: 16px; align-items: center; padding-block: 16px; border-bottom: 1px solid var(--line); }
+.q .n { width: 40px; height: 40px; border-radius: 10px; background: var(--tint); color: var(--accent); display: grid; place-items: center; font-family: var(--display); font-weight: 700; font-size: 18px; }
+.q.yes .n { background: var(--accent); color: #fff; }
+.q fieldset { border: 0; margin: 0; padding: 0; min-width: 0; display: contents; }
+.q legend { padding: 0; font-weight: 700; font-size: 16.5px; line-height: 1.35; }
+.q .text { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.q .leak { font-size: 14.5px; color: var(--muted); }
+.q .leak b { color: var(--accent); }
+.yn { display: flex; gap: 6px; }
+.yn input { position: absolute; opacity: 0; pointer-events: none; }
+.yn label { min-width: 64px; min-height: 44px; padding: 0 14px; display: grid; place-items: center; border: 2px solid var(--ink); border-radius: 8px; background: var(--paper); font-weight: 800; font-size: 15px; cursor: pointer; user-select: none; transition: background .15s, color .15s; }
+.yn label:hover { background: var(--tint); }
+.yn input:focus-visible + label { outline: 3px solid var(--accent); outline-offset: 2px; }
+.yn input[value="yes"]:checked + label { background: var(--accent); border-color: var(--accent); color: #fff; }
+.yn input[value="no"]:checked + label { background: var(--ink); color: var(--on-ink); }
+@media (max-width: 560px) {
+  .q { grid-template-columns: 36px minmax(0, 1fr); }
+  .q .n { width: 36px; height: 36px; font-size: 16px; }
+  .yn { grid-column: 2; }
+  .yn label { flex: 1; }
+}
+.linkbtn { align-self: flex-start; background: none; border: 0; padding: 8px 0; color: var(--accent); font: inherit; font-weight: 700; font-size: 15px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.linkbtn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+.bands { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+.bandcard { border-radius: 14px; padding: 20px 22px; display: flex; flex-direction: column; gap: 8px; background: var(--paper); border: 2px solid var(--line); opacity: .55; transition: opacity .2s, border-color .2s; }
+.bandcard.on { opacity: 1; border-color: var(--accent); box-shadow: 0 6px 18px rgba(19,32,43,.08); }
+.bandcard .range { font-family: var(--display); font-weight: 700; font-size: 32px; line-height: 1; color: var(--accent); }
+.bandcard h3 { font-family: var(--text); font-size: 18px; font-weight: 800; letter-spacing: 0; }
+.bandcard p { font-size: 15px; color: var(--body); }
+.bandcard p.todo { font-weight: 700; color: var(--ink); }
+.you { align-self: flex-start; font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; background: var(--accent); color: #fff; padding: 3px 10px; border-radius: 99px; }
+.bandcard:not(.on) .you { display: none; }
+.yeslist { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { padding: 6px 12px; border-radius: 99px; background: var(--tint); font-size: 14px; font-weight: 700; }
+.empty { padding: 18px 20px; border-radius: 12px; background: var(--tint); color: var(--body); font-size: 15px; }
+
+.calc-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+.card { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 22px 24px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.field { display: flex; flex-direction: column; gap: 6px; font-size: 14.5px; font-weight: 700; }
+.field .hint { font-weight: 500; color: var(--muted); font-size: 13.5px; }
+.field input, .field select { min-height: 46px; padding: 0 12px; border: 1px solid #A9B4B0; border-radius: 8px; font: inherit; font-weight: 600; background: var(--paper); color: var(--ink); width: 100%; }
+.field input:focus-visible, .field select:focus-visible { outline: 3px solid var(--mint); outline-offset: 1px; border-color: var(--accent); }
+.money { display: flex; align-items: center; border: 1px solid #A9B4B0; border-radius: 8px; background: var(--paper); }
+.money span { padding-left: 12px; color: var(--muted); font-weight: 700; }
+.money input { border: 0; min-height: 44px; }
+.two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 420px) { .two { grid-template-columns: minmax(0, 1fr); } }
+.leakcost { margin-top: 2px; padding: 14px 16px; border-radius: 12px; background: var(--tint); display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.leakcost span { font-size: 14px; color: var(--muted); font-weight: 700; }
+.leakcost strong { font-family: var(--display); font-size: 28px; line-height: 1; font-variant-numeric: tabular-nums; }
+.lock { display: inline-flex; align-items: center; gap: 6px; font-family: var(--text) !important; font-size: 15px !important; font-weight: 800; color: var(--muted); }
+.example { font-size: 15px; color: var(--body); background: var(--tint); border-radius: 12px; padding: 14px 18px; }
+.example b { color: var(--ink); }
+
+.unlock { background: var(--ink); color: var(--on-ink); border-radius: 16px; padding: 28px; display: flex; flex-direction: column; gap: 18px; }
+.unlock h3 { font-size: clamp(26px, 4vw, 32px); line-height: 1.1; }
+.unlock p.sub { color: var(--on-ink-muted); max-width: 58ch; }
+.unlock form { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; }
+.unlock .field { color: var(--on-ink); }
+.unlock .field input { border-color: #4A5B68; }
+.unlock .full { grid-column: 1 / -1; }
+.check { display: flex; gap: 10px; align-items: flex-start; font-size: 15px; color: #E4EAEE; font-weight: 600; cursor: pointer; }
+.check input { width: 20px; height: 20px; margin: 2px 0 0; accent-color: var(--mint); flex: none; }
+.fine { font-size: 13.5px; color: var(--on-ink-muted); }
+.err { color: #FFB4A8; font-weight: 700; font-size: 15px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; min-height: 52px; padding: 0 24px; border-radius: 8px; background: var(--accent); color: #fff; text-decoration: none; border: 0; font: inherit; font-weight: 800; cursor: pointer; }
+.btn:hover { background: var(--accent-dark); color: #fff; }
+.btn:focus-visible { outline: 3px solid var(--mint); outline-offset: 2px; }
+.btn[disabled] { opacity: .6; cursor: progress; }
+.btn.light { background: var(--on-ink); color: var(--ink); }
+.btn.light:hover { background: #fff; color: var(--ink); }
+.done { display: flex; flex-direction: column; gap: 8px; }
+.done strong { font-family: var(--display); font-size: 26px; color: var(--mint); }
+
+.total { background: var(--ink); color: var(--on-ink); border-radius: 16px; padding: 24px 28px; display: flex; flex-wrap: wrap; gap: 20px 40px; align-items: flex-end; }
+.total div { display: flex; flex-direction: column; gap: 4px; }
+.total span { font-size: 14px; color: var(--on-ink-muted); font-weight: 700; }
+.total strong { font-family: var(--display); font-weight: 700; font-size: clamp(36px, 6vw, 52px); line-height: 1; color: var(--mint); font-variant-numeric: tabular-nums; }
+.total p { flex: 1 1 240px; color: var(--on-ink-muted); font-size: 15px; }
+
+.doors { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
+.door { border-radius: 16px; padding: 26px; display: flex; flex-direction: column; gap: 12px; background: var(--paper); border: 2px solid var(--line); }
+.door.rec { border-color: var(--accent); box-shadow: 0 8px 22px rgba(19,32,43,.1); }
+.door .eyebrow { font-size: 12.5px; }
+.door h3 { font-size: 30px; line-height: 1.1; }
+.door p { color: var(--body); font-size: 16px; }
+.price { display: flex; align-items: baseline; gap: 6px; }
+.price small { font-size: 13px; font-weight: 700; color: var(--muted); }
+.price b { font-family: var(--display); font-size: 34px; line-height: 1; }
+.door .note { padding: 10px 12px; border-radius: 10px; background: var(--tint); font-size: 14.5px; font-weight: 600; color: var(--ink); }
+.recflag { display: none; align-self: flex-start; font-size: 12px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; background: var(--accent); color: #fff; padding: 4px 10px; border-radius: 99px; }
+.door.rec .recflag { display: inline-block; }
+
+.cta { margin-top: 48px; }
+.cta .wrap { padding-block: 56px; display: flex; flex-wrap: wrap; gap: 28px 48px; align-items: center; }
+.cta-copy { flex: 999 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.cta-copy h2 { font-size: clamp(30px, 4.6vw, 42px); line-height: 1.08; }
+.cta-copy p { color: var(--on-ink-muted); max-width: 52ch; }
+.cta-act { flex: 1 1 260px; display: flex; flex-direction: column; gap: 10px; }
+.cta-act .fine { text-align: center; }
+.about { padding-block: 32px; display: flex; gap: 16px; align-items: flex-start; color: var(--body); font-size: 15px; }
+footer { background: #0C151D; color: #AEB9C1; font-size: 14px; }
+footer .wrap { padding-block: 22px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 20px; }
+footer a { color: #DCE3E8; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } * { transition: none !important; } }
+</style>
+</head>
+<body>
+
+<header class="band">
+  <div class="wrap top">
+    <div class="brand">
+      <a class="logo" href="/" aria-label="T7 Technology Solutions home">
+        <svg width="44" height="44" viewBox="0 0 120 120" aria-hidden="true"><rect x="4" y="4" width="112" height="112" rx="28" fill="#0B6B58"></rect><path d="M28 38 H90 L64 92 M45 38 V92" fill="none" stroke="#FFFFFF" stroke-width="12" stroke-linejoin="round" stroke-linecap="round"></path></svg>
+        <span><span>Technology</span><span>Solutions</span></span>
+      </a>
+      <span class="pill">Free scorecard</span>
+    </div>
+    <div class="hero">
+      <p class="eyebrow">For Jacksonville small business owners</p>
+      <h1>The Leak Finder</h1>
+      <p>11 places Jacksonville small businesses quietly lose money and hours</p>
+      <small>About 10 minutes. Go with your first honest answer. Your score adds itself up as you go.</small>
+    </div>
+  </div>
+</header>
+
+<div class="scorebar" aria-live="polite">
+  <div class="wrap">
+    <span class="num" id="score">0<small> / 11</small></span>
+    <span class="meta"><strong id="bandName">Answer the questions below</strong><span id="answered">0 of 11 answered</span></span>
+    <span class="track" aria-hidden="true"><i id="bar"></i></span>
+  </div>
+</div>
+
+<main>
+  <section class="wrap block" aria-labelledby="s1">
+    <div class="block-head">
+      <p class="eyebrow">Step 1</p>
+      <h2 id="s1">The scorecard</h2>
+      <p class="lede">Every Yes is a leak: money or hours walking out the door each month.</p>
+    </div>
+    <ol class="qs" id="qs"></ol>
+    <button class="linkbtn" id="reset" type="button">Clear my answers</button>
+  </section>
+
+  <section class="wrap block" aria-labelledby="s2">
+    <div class="block-head">
+      <p class="eyebrow">Step 2</p>
+      <h2 id="s2">What your score means</h2>
+    </div>
+    <div class="bands">
+      <div class="bandcard" data-band="0">
+        <span class="you">Your score</span>
+        <span class="range">0–2</span>
+        <h3>Tight ship</h3>
+        <p>Your systems are in good shape. Any leak you found is likely small and easy to plug.</p>
+        <p class="todo">Price your one leak below. If it's worth more than a few hundred dollars a month, it's worth fixing.</p>
+      </div>
+      <div class="bandcard" data-band="1">
+        <span class="you">Your score</span>
+        <span class="range">3–5</span>
+        <h3>Slow drip</h3>
+        <p>A few leaks are quietly adding up. Each one feels small, but together they cost real money and evenings every month.</p>
+        <p class="todo">Price your top two leaks below. One usually stands out as worth fixing first.</p>
+      </div>
+      <div class="bandcard" data-band="2">
+        <span class="you">Your score</span>
+        <span class="range">6–11</span>
+        <h3>Wide open</h3>
+        <p>Leaks are coming from several directions, and it's hard to tell which matters most. That's normal for a busy, growing business, and very fixable.</p>
+        <p class="todo">Don't try to fix everything at once. Find the leak that costs the most, then fix that one first.</p>
+      </div>
+    </div>
+    <div id="yesWrap"></div>
+  </section>
+
+  <section class="wrap block" aria-labelledby="s3">
+    <div class="block-head">
+      <p class="eyebrow">Step 3</p>
+      <h2 id="s3">Put a dollar figure on it</h2>
+      <p class="lede">Every leak costs you lost time, lost sales, or both. Pick your two biggest leaks and fill in rough numbers. Estimates are fine.</p>
+    </div>
+    <div class="card">
+      <div class="two">
+        <label class="field" for="rate">Your hourly value <span class="hint">Not sure? Use what you'd pay someone to do the task, or $50.</span>
+          <span class="money"><span>$</span><input id="rate" type="number" inputmode="decimal" min="0" step="5" value="50"></span>
+        </label>
+        <label class="field" for="jobValue">Average job or client value <span class="hint">What a typical job or client is worth to you.</span>
+          <span class="money"><span>$</span><input id="jobValue" type="number" inputmode="decimal" min="0" step="50"></span>
+        </label>
+      </div>
+    </div>
+    <div class="calc-grid" id="calc"></div>
+    <p class="example"><b>Example with made-up numbers:</b> a remodeler answers Yes to slow callbacks. About 3 leads a month hire someone else before he calls back, and his average job is $2,000. That's 3 × $2,000 = $6,000 a month, about $72,000 a year, from one leak. Even if only one of those leads would have hired him, that's still $2,000 a month.</p>
+
+    <div class="unlock" id="unlock">
+      <div>
+        <p class="eyebrow">Your results</p>
+        <h3>See what your leaks cost you</h3>
+      </div>
+      <p class="sub">Enter your name and email to see your monthly and yearly cost, plus the next step that fits your score. Michael gets a copy of your results so your free Score Review can start with your numbers.</p>
+      <form name="leak-finder" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="leadForm" novalidate>
+        <input type="hidden" name="form-name" value="leak-finder">
+        <input type="hidden" name="subject" id="f_subject" value="New Leak Finder result">
+        <p class="visually-hidden"><label>Don't fill this out: <input name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+        <label class="field" for="f_name">Your name<input id="f_name" name="name" type="text" autocomplete="name" required></label>
+        <label class="field" for="f_email">Email<input id="f_email" name="email" type="email" autocomplete="email" required></label>
+        <label class="field full" for="f_business">Business name <span class="hint" style="color: var(--on-ink-muted)">Optional</span><input id="f_business" name="business" type="text" autocomplete="organization"></label>
+        <label class="check full" for="f_optin"><input id="f_optin" name="marketing_opt_in" type="checkbox" value="Yes"> Send me occasional tips from T7 on saving time and money. Unsubscribe anytime.</label>
+        <input type="hidden" name="score" id="f_score">
+        <input type="hidden" name="score_band" id="f_band">
+        <input type="hidden" name="yes_answers" id="f_yes">
+        <input type="hidden" name="hourly_value" id="f_rate">
+        <input type="hidden" name="average_job_value" id="f_jv">
+        <input type="hidden" name="leak_1" id="f_l1">
+        <input type="hidden" name="leak_1_monthly_cost" id="f_l1c">
+        <input type="hidden" name="leak_2" id="f_l2">
+        <input type="hidden" name="leak_2_monthly_cost" id="f_l2c">
+        <input type="hidden" name="monthly_total" id="f_month">
+        <input type="hidden" name="yearly_total" id="f_year">
+        <input type="hidden" name="suggested_next_step" id="f_rec">
+        <div class="full" style="display: flex; flex-direction: column; gap: 10px">
+          <p class="err" id="formErr" role="alert" hidden></p>
+          <button class="btn light" type="submit" id="submitBtn" style="align-self: flex-start">Show my results</button>
+          <p class="fine">Your email is used to follow up about your results. Tips only if you check the box.</p>
+        </div>
+      </form>
+      <div class="done" id="doneMsg" hidden>
+        <strong id="doneTitle">Your results are unlocked.</strong>
+        <p class="sub">Michael has a copy of your results and will reach out about a free 15-minute Score Review. Change any number above and your totals update below.</p>
+      </div>
+    </div>
+
+    <div class="total" aria-live="polite">
+      <div><span>Monthly cost of these leaks</span><strong id="tMonth"><span class="lock">Locked</span></strong></div>
+      <div><span>Yearly cost</span><strong id="tYear"><span class="lock">Locked</span></strong></div>
+      <p id="tNote">Enter your name and email above to see your totals.</p>
+    </div>
+  </section>
+
+  <section class="wrap block" aria-labelledby="s4">
+    <div class="block-head">
+      <p class="eyebrow">Step 4 · Your next step</p>
+      <h2 id="s4">Do you already know what's broken?</h2>
+      <p class="lede" id="recLine">Unlock your results above to see which door we suggest for you.</p>
+    </div>
+    <div class="doors">
+      <div class="door" id="doorMap">
+        <span class="recflag">Suggested for you</span>
+        <p class="eyebrow">No · several leaks, not sure which matters</p>
+        <h3>The Money Map</h3>
+        <p>Turns the data you already have into a live dashboard and a ranked list of your top 3 fixes.</p>
+        <p class="price"><small>Starting at</small><b>$1,000</b></p>
+        <p class="note">Fully credited toward a 30-Day Fix booked within 30 days.</p>
+      </div>
+      <div class="door" id="doorFix">
+        <span class="recflag">Suggested for you</span>
+        <p class="eyebrow">Yes · one leak clearly stands out</p>
+        <h3>The 30-Day Fix</h3>
+        <p>One costly problem, one fixed price, built and running within 30 days and measured against your own numbers.</p>
+        <p class="price"><small>Starting at</small><b>$1,500</b></p>
+        <p class="note">Uses the tools you already have. No new software to learn.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<section class="band cta" aria-labelledby="s5">
+  <div class="wrap">
+    <div class="cta-copy">
+      <p class="eyebrow">Not sure which?</p>
+      <h2 id="s5">Get a free 15-minute Score Review</h2>
+      <p>Bring your score. Michael will tell you which door fits, or tell you honestly if neither does. No pitch.</p>
+    </div>
+    <div class="cta-act">
+      <a class="btn" href="/#contact">Request my Score Review</a>
+      <p class="fine">Or email <a href="mailto:info@t7techfl.com" style="color: #E4EAEE">info@t7techfl.com</a></p>
+    </div>
+  </div>
+</section>
+
+<div class="wrap about">
+  <svg width="40" height="40" viewBox="0 0 120 120" aria-hidden="true" style="flex: none"><rect x="4" y="4" width="112" height="112" rx="28" fill="#13202B"></rect><path d="M28 38 H90 L64 92 M45 38 V92" fill="none" stroke="#F6F6F2" stroke-width="12" stroke-linejoin="round" stroke-linecap="round"></path></svg>
+  <p>Michael is the founder of T7 Technology Solutions and a former algebra teacher. He helps Jacksonville small business owners fix the busywork that's costing them money, so they can get back to the work and the people they love.</p>
+</div>
+
+<footer>
+  <div class="wrap"><span>© 2026 T7 Technology Solutions · Jacksonville, FL</span><a href="/">t7techfl.com</a></div>
+</footer>
+
+<script>
+(function () {
+  var QUESTIONS = [
+    ["Do new leads or calls ever wait more than an hour for a reply?", "Slow callbacks", "the lead hires whoever answers first"],
+    ["Do you have invoices more than 30 days past due right now?", "Unpaid invoices", "you did the work and are still waiting on the money"],
+    ["Do clients miss or cancel appointments or classes without notice at least once a week?", "No-shows", "an empty slot you can't sell twice"],
+    ["Do you or your team type the same information into more than one place?", "Double data entry", "paid hours spent copying, plus mistakes"],
+    ["Does booking a job or session take a back-and-forth of calls or texts?", "Manual scheduling", "time lost and customers who give up"],
+    ["Do you send quotes or estimates and then forget to follow up?", "Cold quotes", "jobs you were close to winning"],
+    ["Do memberships, contracts or repeat customers lapse without anyone reaching out?", "Missed renewals", "revenue you already earned the right to"],
+    ["Do you answer the same customer questions over and over (hours, pricing, what to bring)?", "Repeat questions", "interruptions that eat the workday"],
+    ["Does month-end or bookkeeping take you more than a few hours?", "Month-end crunch", "your evenings and weekends"],
+    ["Would you struggle to say which service or product makes you the most money?", "Flying blind", "pricing and effort going to the wrong work"],
+    ["Would you struggle to name your single biggest expense, or roughly how much it costs you each month?", "Unwatched costs", "your biggest expense can creep up for months before anyone notices"]
+  ];
+  var BANDS = ["Tight ship", "Slow drip", "Wide open"];
+  var KEY = "t7-leak-finder-v1";
+  var state = { answers: {}, leaks: [{ q: "", hours: "", jobs: "" }, { q: "", hours: "", jobs: "" }], rate: "50", jobValue: "", unlocked: false, name: "" };
+  try { var saved = JSON.parse(localStorage.getItem(KEY) || "null"); if (saved && saved.answers) state = Object.assign(state, saved); } catch (e) {}
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+  function $(id) { return document.getElementById(id); }
+
+  var qs = $("qs");
+  QUESTIONS.forEach(function (q, i) {
+    var li = document.createElement("li");
+    li.className = "q";
+    li.id = "q" + (i + 1);
+    li.innerHTML =
+      '<span class="n" aria-hidden="true">' + (i + 1) + '</span>' +
+      '<fieldset><div class="text"><legend>' + q[0] + '</legend>' +
+      '<span class="leak"><b>' + q[1] + ':</b> ' + q[2] + '</span></div>' +
+      '<div class="yn">' +
+        '<input type="radio" id="a' + i + 'y" name="a' + i + '" value="yes"><label for="a' + i + 'y">Yes</label>' +
+        '<input type="radio" id="a' + i + 'n" name="a' + i + '" value="no"><label for="a' + i + 'n">No</label>' +
+      '</div></fieldset>';
+    qs.appendChild(li);
+  });
+  qs.addEventListener("change", function (e) {
+    var t = e.target;
+    if (t.type !== "radio") return;
+    state.answers[t.name.slice(1)] = t.value;
+    save(); render();
+  });
+  $("reset").addEventListener("click", function () {
+    state.answers = {};
+    state.leaks = [{ q: "", hours: "", jobs: "" }, { q: "", hours: "", jobs: "" }];
+    qs.querySelectorAll("input").forEach(function (i) { i.checked = false; });
+    save(); buildCalc(); render();
+  });
+
+  function yesIdx() { return QUESTIONS.map(function (_, i) { return i; }).filter(function (i) { return state.answers[i] === "yes"; }); }
+  function num(v) { var n = parseFloat(v); return isFinite(n) && n > 0 ? n : 0; }
+  function money(n) { return "$" + Math.round(n).toLocaleString("en-US"); }
+  function leakCost(k) { return num(state.leaks[k].hours) * num(state.rate) + num(state.leaks[k].jobs) * num(state.jobValue); }
+  function leakName(k) { var q = state.leaks[k].q; return q === "" ? "" : "#" + (+q + 1) + " " + QUESTIONS[+q][1]; }
+  function lockHTML() { return '<span class="lock">Locked</span>'; }
+
+  var calc = $("calc");
+  function buildCalc() {
+    calc.innerHTML = "";
+    [0, 1].forEach(function (k) {
+      var card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML =
+        '<label class="field" for="l' + k + 'q">Leak #' + (k + 1) + '<select id="l' + k + 'q"></select></label>' +
+        '<div class="two">' +
+          '<label class="field" for="l' + k + 'h">Hours lost per month<input id="l' + k + 'h" type="number" inputmode="decimal" min="0" step="1" placeholder="0"></label>' +
+          '<label class="field" for="l' + k + 'j">Jobs or clients lost per month<input id="l' + k + 'j" type="number" inputmode="decimal" min="0" step="1" placeholder="0"></label>' +
+        '</div>' +
+        '<div class="leakcost"><span>This leak costs about</span><strong id="l' + k + 'c"></strong></div>';
+      calc.appendChild(card);
+      var h = $("l" + k + "h"), j = $("l" + k + "j"), s = $("l" + k + "q");
+      h.value = state.leaks[k].hours; j.value = state.leaks[k].jobs;
+      h.addEventListener("input", function () { state.leaks[k].hours = h.value; save(); renderCalc(); });
+      j.addEventListener("input", function () { state.leaks[k].jobs = j.value; save(); renderCalc(); });
+      s.addEventListener("change", function () { state.leaks[k].q = s.value; save(); renderCalc(); });
+    });
+  }
+  function fillSelects() {
+    var yes = yesIdx();
+    var list = yes.length ? yes : QUESTIONS.map(function (_, i) { return i; });
+    [0, 1].forEach(function (k) {
+      var s = $("l" + k + "q");
+      var opts = '<option value="">' + (yes.length ? "Pick one of your Yes answers" : "Pick a leak") + '</option>';
+      list.forEach(function (i) { opts += '<option value="' + i + '">#' + (i + 1) + ' ' + QUESTIONS[i][1] + '</option>'; });
+      s.innerHTML = opts;
+      if (state.leaks[k].q !== "" && list.indexOf(+state.leaks[k].q) > -1) s.value = state.leaks[k].q;
+      else if (yes[k] !== undefined) { s.value = String(yes[k]); state.leaks[k].q = String(yes[k]); }
+      else { s.value = ""; state.leaks[k].q = ""; }
+    });
+  }
+
+  function recommendation() {
+    var answered = Object.keys(state.answers).length, score = yesIdx().length;
+    if (!answered) return { door: "", line: "Answer the scorecard to see which door fits." };
+    if (score === 0) return { door: "map", line: "No leaks found. If something still feels off, the Money Map will show you where to look." };
+    if (score <= 2) return { door: "fix", line: "With one or two leaks, you probably know what to fix. The 30-Day Fix is built for that." };
+    return { door: "map", line: "With " + score + " leaks, start by seeing which one costs the most. That's what the Money Map is for." };
+  }
+
+  function renderCalc() {
+    var total = leakCost(0) + leakCost(1), any = false;
+    [0, 1].forEach(function (k) {
+      if (num(state.leaks[k].hours) || num(state.leaks[k].jobs)) any = true;
+      $("l" + k + "c").innerHTML = state.unlocked ? money(leakCost(k)) + " / mo" : lockHTML();
+    });
+    var note = $("tNote");
+    if (!state.unlocked) {
+      $("tMonth").innerHTML = lockHTML(); $("tYear").innerHTML = lockHTML();
+      note.textContent = "Enter your name and email above to see your totals.";
+    } else {
+      $("tMonth").textContent = money(total);
+      $("tYear").textContent = money(total * 12);
+      var needJv = (num(state.leaks[0].jobs) || num(state.leaks[1].jobs)) && !num(state.jobValue);
+      if (needJv) note.textContent = "Add your average job or client value above to count the jobs you're losing.";
+      else if (!any) note.textContent = "Fill in hours or lost jobs for at least one leak to see what it costs you.";
+      else note.textContent = "That's what these leaks cost before you fix them. Bring this number to your Score Review.";
+    }
+    var rec = recommendation(), map = $("doorMap"), fix = $("doorFix");
+    map.classList.toggle("rec", state.unlocked && rec.door === "map");
+    fix.classList.toggle("rec", state.unlocked && rec.door === "fix");
+    $("recLine").textContent = state.unlocked ? rec.line : "Unlock your results above to see which door we suggest for you.";
+  }
+
+  function render() {
+    var yes = yesIdx(), answered = Object.keys(state.answers).length, score = yes.length;
+    $("score").innerHTML = score + "<small> / 11</small>";
+    $("answered").textContent = answered + " of 11 answered";
+    $("bar").style.width = (answered / 11 * 100) + "%";
+    var band = score <= 2 ? 0 : score <= 5 ? 1 : 2;
+    $("bandName").textContent = answered ? BANDS[band] : "Answer the questions below";
+    document.querySelectorAll(".bandcard").forEach(function (c) { c.classList.toggle("on", answered > 0 && +c.dataset.band === band); });
+    QUESTIONS.forEach(function (_, i) {
+      $("q" + (i + 1)).classList.toggle("yes", state.answers[i] === "yes");
+      if (state.answers[i]) $("a" + i + (state.answers[i] === "yes" ? "y" : "n")).checked = true;
+    });
+    var yw = $("yesWrap");
+    if (!answered) yw.innerHTML = '<p class="empty">Your leaks will show up here as you answer.</p>';
+    else if (!yes.length) yw.innerHTML = '<p class="empty">No leaks so far. Nice work.</p>';
+    else yw.innerHTML = '<div class="yeslist" aria-label="Your leaks">' + yes.map(function (i) { return '<span class="chip">#' + (i + 1) + ' ' + QUESTIONS[i][1] + '</span>'; }).join("") + '</div>';
+    fillSelects(); renderCalc();
+  }
+
+  var rateEl = $("rate"), jvEl = $("jobValue");
+  rateEl.value = state.rate; jvEl.value = state.jobValue;
+  rateEl.addEventListener("input", function () { state.rate = rateEl.value; save(); renderCalc(); });
+  jvEl.addEventListener("input", function () { state.jobValue = jvEl.value; save(); renderCalc(); });
+
+  function showUnlocked() {
+    $("leadForm").hidden = true;
+    $("doneMsg").hidden = false;
+    $("doneTitle").textContent = state.name ? "Thanks, " + state.name.split(" ")[0] + ". Your results are unlocked." : "Your results are unlocked.";
+    renderCalc();
+  }
+
+  var form = $("leadForm");
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    var err = $("formErr"), nameEl = $("f_name"), emailEl = $("f_email");
+    err.hidden = true;
+    if (!nameEl.value.trim()) { err.textContent = "Please enter your name."; err.hidden = false; nameEl.focus(); return; }
+    if (!emailEl.value.trim() || !emailEl.checkValidity()) { err.textContent = "Please enter a valid email address, like name@business.com."; err.hidden = false; emailEl.focus(); return; }
+    var yes = yesIdx(), score = yes.length, answered = Object.keys(state.answers).length;
+    var band = score <= 2 ? 0 : score <= 5 ? 1 : 2;
+    var total = leakCost(0) + leakCost(1);
+    $("f_score").value = score + " / 11 (" + answered + " of 11 answered)";
+    $("f_band").value = answered ? BANDS[band] : "Not answered";
+    $("f_yes").value = yes.length ? yes.map(function (i) { return "#" + (i + 1) + " " + QUESTIONS[i][1]; }).join("; ") : "None";
+    $("f_rate").value = money(num(state.rate));
+    $("f_jv").value = num(state.jobValue) ? money(num(state.jobValue)) : "Not entered";
+    [0, 1].forEach(function (k) {
+      var n = leakName(k);
+      $("f_l" + (k + 1)).value = n ? n + " (" + (num(state.leaks[k].hours) || 0) + " hrs/mo, " + (num(state.leaks[k].jobs) || 0) + " jobs/mo)" : "Not chosen";
+      $("f_l" + (k + 1) + "c").value = money(leakCost(k));
+    });
+    $("f_month").value = money(total);
+    $("f_year").value = money(total * 12);
+    var rec = recommendation();
+    $("f_rec").value = rec.door === "fix" ? "The 30-Day Fix" : rec.door === "map" ? "The Money Map" : "Not enough answers";
+    $("f_subject").value = "Leak Finder: " + nameEl.value.trim() + " scored " + score + "/11 (" + money(total) + "/mo)";
+    var btn = $("submitBtn");
+    btn.disabled = true; btn.textContent = "Sending…";
+    fetch("/", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams(new FormData(form)).toString()
+    }).then(function (res) {
+      if (!res.ok) throw new Error("status " + res.status);
+      state.unlocked = true; state.name = nameEl.value.trim(); save(); showUnlocked();
+    }).catch(function () {
+      err.textContent = "Your results didn't send. Check your connection and try again.";
+      err.hidden = false;
+    }).then(function () { btn.disabled = false; btn.textContent = "Show my results"; });
+  });
+
+  buildCalc(); render();
+  if (state.unlocked) showUnlocked();
+})();
+</script>
+</body>
+</html>
