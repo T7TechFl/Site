@@ -227,21 +227,51 @@ footer a { color: #DCE3E8; }
     <button class="linkbtn" id="reset" type="button">Clear my answers</button>
   </section>
 
+  <section class="wrap block" aria-labelledby="s2">
+    <div class="block-head">
+      <p class="eyebrow">Step 2</p>
+      <h2 id="s2">What your score means</h2>
+    </div>
+    <div class="bands">
+      <div class="bandcard" data-band="0">
+        <span class="you">Your score</span>
+        <span class="range">0–2</span>
+        <h3>Tight ship</h3>
+        <p>Your systems are in good shape. Any leak you found is likely small and easy to plug.</p>
+        <p class="todo">Price your one leak below. If it's worth more than a few hundred dollars a month, it's worth fixing.</p>
+      </div>
+      <div class="bandcard" data-band="1">
+        <span class="you">Your score</span>
+        <span class="range">3–5</span>
+        <h3>Slow drip</h3>
+        <p>A few leaks are quietly adding up. Each one feels small, but together they cost real money and evenings every month.</p>
+        <p class="todo">Price your top two leaks below. One usually stands out as worth fixing first.</p>
+      </div>
+      <div class="bandcard" data-band="2">
+        <span class="you">Your score</span>
+        <span class="range">6–11</span>
+        <h3>Wide open</h3>
+        <p>Leaks are coming from several directions, and it's hard to tell which matters most. That's normal for a busy, growing business, and very fixable.</p>
+        <p class="todo">Don't try to fix everything at once. Find the leak that costs the most, then fix that one first.</p>
+      </div>
+    </div>
+    <div id="yesWrap"></div>
+  </section>
+
   <section class="wrap block" aria-labelledby="sGate">
     <div class="unlock" id="unlock">
       <div>
-        <p class="eyebrow">Step 2 · Your results</p>
+        <p class="eyebrow">Step 3 · Your dollar figures</p>
         <h2 id="sGate" class="gate-title">See what your leaks are costing you</h2>
       </div>
-      <p class="sub" id="gateSub">Enter your name and email to unlock your full results. They're free, and they take about 5 more minutes.</p>
+      <p class="sub" id="gateSub">Enter your name and email to put a dollar figure on your leaks and see which next step fits. It's free and takes about 5 more minutes.</p>
       <div class="teaser" aria-hidden="true">
-        <div class="tz"><span class="tz-label">Your score means</span><span class="tz-blur">Slow drip</span></div>
         <div class="tz"><span class="tz-label">Your leaks cost about</span><span class="tz-blur">$4,850 / mo</span></div>
+        <div class="tz"><span class="tz-label">Per year</span><span class="tz-blur">$58,200 / yr</span></div>
         <div class="tz"><span class="tz-label">Your best next step</span><span class="tz-blur">Money Map</span></div>
       </div>
       <ul class="gets">
-        <li>What your score means, and what to do about it</li>
-        <li>A dollar figure on your top two leaks, per month and per year</li>
+        <li>A dollar figure on your top two leaks, per month and per year, worked out for you</li>
         <li>The next step that fits your business</li>
       </ul>
       <form name="leak-finder" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="leadForm" novalidate>
@@ -273,42 +303,12 @@ footer a { color: #DCE3E8; }
       </form>
       <div class="done" id="doneMsg" hidden>
         <strong id="doneTitle">Your results are unlocked.</strong>
-        <p class="sub">Scroll down to see what your score means and put a dollar figure on your leaks.</p>
+        <p class="sub">Scroll down to put a dollar figure on your leaks.</p>
       </div>
     </div>
   </section>
 
   <div id="results" hidden>
-  <section class="wrap block" aria-labelledby="s2">
-    <div class="block-head">
-      <p class="eyebrow">Step 3</p>
-      <h2 id="s2">What your score means</h2>
-    </div>
-    <div class="bands">
-      <div class="bandcard" data-band="0">
-        <span class="you">Your score</span>
-        <span class="range">0–2</span>
-        <h3>Tight ship</h3>
-        <p>Your systems are in good shape. Any leak you found is likely small and easy to plug.</p>
-        <p class="todo">Price your one leak below. If it's worth more than a few hundred dollars a month, it's worth fixing.</p>
-      </div>
-      <div class="bandcard" data-band="1">
-        <span class="you">Your score</span>
-        <span class="range">3–5</span>
-        <h3>Slow drip</h3>
-        <p>A few leaks are quietly adding up. Each one feels small, but together they cost real money and evenings every month.</p>
-        <p class="todo">Price your top two leaks below. One usually stands out as worth fixing first.</p>
-      </div>
-      <div class="bandcard" data-band="2">
-        <span class="you">Your score</span>
-        <span class="range">6–11</span>
-        <h3>Wide open</h3>
-        <p>Leaks are coming from several directions, and it's hard to tell which matters most. That's normal for a busy, growing business, and very fixable.</p>
-        <p class="todo">Don't try to fix everything at once. Find the leak that costs the most, then fix that one first.</p>
-      </div>
-    </div>
-    <div id="yesWrap"></div>
-  </section>
 
   <section class="wrap block" aria-labelledby="s3">
     <div class="block-head">
@@ -521,7 +521,7 @@ footer a { color: #DCE3E8; }
     $("score").innerHTML = score + "<small> / 11</small>";
     $("answered").textContent = answered + " of 11 answered";
     $("bar").style.width = (answered / 11 * 100) + "%";
-    $("bandName").textContent = !answered ? "Answer the questions below" : state.unlocked ? BANDS[band] : (answered < 11 ? "Keep going" : "Unlock your results below");
+    $("bandName").textContent = !answered ? "Answer the questions below" : BANDS[band];
     document.querySelectorAll(".bandcard").forEach(function (c) { c.classList.toggle("on", answered > 0 && +c.dataset.band === band); });
     QUESTIONS.forEach(function (_, i) {
       $("q" + (i + 1)).classList.toggle("yes", state.answers[i] === "yes");
@@ -533,8 +533,8 @@ footer a { color: #DCE3E8; }
     else yw.innerHTML = '<div class="yeslist" aria-label="Your leaks">' + yes.map(function (i) { return '<span class="chip">#' + (i + 1) + ' ' + QUESTIONS[i][1] + '</span>'; }).join("") + '</div>';
     if (!state.unlocked) {
       $("gateSub").textContent = answered
-        ? "You found " + score + " leak" + (score === 1 ? "" : "s") + ". Enter your name and email to see what they're costing you and which next step fits."
-        : "Answer the 11 questions above, then enter your name and email to unlock your full results.";
+        ? "You found " + score + " leak" + (score === 1 ? "" : "s") + ". Enter your name and email to see what " + (score === 1 ? "it's" : "they're") + " costing you and which next step fits."
+        : "Answer the 11 questions above, then enter your name and email to put a dollar figure on your leaks.";
     }
     fillSelects(); renderCalc();
   }
@@ -584,7 +584,7 @@ footer a { color: #DCE3E8; }
     document.querySelector(".gets").hidden = true;
     $("gateSub").hidden = true;
     render();
-    if (scroll) $("s2").scrollIntoView({ behavior: "smooth", block: "start" });
+    if (scroll) $("s3").scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   form.addEventListener("submit", function (e) {
