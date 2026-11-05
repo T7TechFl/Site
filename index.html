@@ -15,6 +15,17 @@ body{margin:0;background:#F6F6F2;color:#13202B}
 a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid #0B6B58;outline-offset:2px}
 @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
 a{color:#0B6B58}a:hover{color:#084C3F}
+.tools{position:relative}
+.tools summary{list-style:none;cursor:pointer;color:#8FD6C2;display:inline-flex;align-items:center;gap:6px;min-height:44px}
+.tools summary::-webkit-details-marker{display:none}
+.tools summary:focus-visible{outline:3px solid #8FD6C2;outline-offset:2px;border-radius:4px}
+.tools summary svg{transition:transform .15s}
+.tools[open] summary svg{transform:rotate(180deg)}
+.tools-menu{position:absolute;top:calc(100% + 6px);left:0;z-index:20;min-width:260px;background:#1C2C39;border:1px solid #2E3D48;border-radius:12px;padding:8px;display:flex;flex-direction:column;box-shadow:0 10px 24px rgba(0,0,0,.25)}
+.tools-menu a{padding:10px 12px;border-radius:8px;display:flex;flex-direction:column;color:#F6F6F2;text-decoration:none}
+.tools-menu a small{color:#C9D3DA;font-weight:500;font-size:13.5px}
+.tools-menu a:hover{background:#2E3D48;color:#F6F6F2}
+@media (max-width:600px){.tools-menu{left:auto;right:auto}}
 </style>
 </head>
 <body>
@@ -35,9 +46,9 @@ a{color:#0B6B58}a:hover{color:#084C3F}
 <nav style="display: flex; flex-wrap: wrap; align-items: center; gap: 8px 28px; font-size: 16px; font-weight: 600">
 <a href="#offers" style="color: #DCE3E8; text-decoration: none">Offers &amp; pricing</a>
 <a href="#process" style="color: #DCE3E8; text-decoration: none">How it works</a>
-<a href="/leak-finder" style="color: #8FD6C2; text-decoration: none">Free Leak Finder</a>
+<details class="tools"><summary>Free tools <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M2 4l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg></summary><div class="tools-menu"><a href="/leak-finder">The Leak Finder<small>11 questions, 10 minutes</small></a><a href="/hourly">What's your hour worth?<small>A 2-minute calculator</small></a></div></details>
 <a href="#about" style="color: #DCE3E8; text-decoration: none">About</a>
-<a href="#contact" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 20px; border-radius: 8px; background: #F6F6F2; color: #13202B; text-decoration: none">Book a free call</a>
+<a href="#contact" style="display: inline-flex; align-items: center; min-height: 44px; padding: 0 20px; border-radius: 8px; background: #F6F6F2; color: #13202B; text-decoration: none">Book a free 30-minute call</a>
 </nav>
 </div>
 </header>
@@ -49,8 +60,8 @@ a{color:#0B6B58}a:hover{color:#084C3F}
 <h1 style="margin: 0 0 24px; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: clamp(40px, 6vw, 64px); line-height: 1.05; letter-spacing: -0.025em">Fix the busywork that's costing you money.</h1>
 <p style="margin: 0 0 36px; max-width: 610px; font-size: 19px; color: #C9D3DA"><strong style="color: #F6F6F2">Then get back to the work, and the people, you love.</strong> Start by seeing where your money goes, or fix the problem you already know about in 30 days.</p>
 <div style="display: flex; flex-wrap: wrap; gap: 14px">
-<a href="#contact" style="display: inline-flex; align-items: center; min-height: 52px; padding: 0 28px; border-radius: 8px; background: #0B6B58; color: #FFFFFF; font-weight: 700; text-decoration: none">Book a free discovery call</a>
-<a href="#offers" style="display: inline-flex; align-items: center; min-height: 52px; padding: 0 28px; border-radius: 8px; border: 2px solid #4A5B68; color: #F6F6F2; font-weight: 700; text-decoration: none">See how to start</a>
+<a href="#contact" style="display: inline-flex; align-items: center; min-height: 52px; padding: 0 28px; border-radius: 8px; background: #0B6B58; color: #FFFFFF; font-weight: 700; text-decoration: none">Book a free 30-minute call</a>
+<a href="#offers" style="display: inline-flex; align-items: center; min-height: 52px; padding: 0 28px; border-radius: 8px; border: 2px solid #4A5B68; color: #F6F6F2; font-weight: 700; text-decoration: none">See pricing</a>
 </div>
 <div style="margin-top: 22px; display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px">
 <span style="color: #C9D3DA; font-size: 16px">Not ready to talk yet?</span>
@@ -158,11 +169,11 @@ a{color:#0B6B58}a:hover{color:#084C3F}
 <section id="process" style="max-width: 1200px; margin: 0 auto; padding: 48px 24px 72px">
 <p style="margin: 0 0 12px; font-size: 15px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #0B6B58">How it works</p>
 <h2 style="margin: 0 0 16px; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: clamp(32px, 4vw, 46px); line-height: 1.1; letter-spacing: -0.02em">Prove it small before you commit big</h2>
-<p style="margin: 0 0 48px; max-width: 640px; color: #4A5864">Not sure which door is yours? That's what the free discovery call is for.</p>
+<p style="margin: 0 0 48px; max-width: 640px; color: #4A5864">Not sure which door is yours? That's what the free 30-minute call is for.</p>
 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 36px">
 <div style="display: flex; flex-direction: column; gap: 10px">
 <span style="font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: 52px; line-height: 1; color: #0B6B58">01</span>
-<h3 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-size: 22px">Free discovery call</h3>
+<h3 style="margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-size: 22px">Free 30-minute call</h3>
 <p style="margin: 0; color: #4A5864; font-size: 16px">30 minutes on what's slowing you down and what it's costing you.</p>
 </div>
 <div style="display: flex; flex-direction: column; gap: 10px">
@@ -224,7 +235,7 @@ a{color:#0B6B58}a:hover{color:#084C3F}
 <div style="max-width: 1200px; margin: 0 auto; padding: 96px 24px; display: flex; flex-wrap: wrap; gap: 56px">
 <div style="flex: 1 1 340px; min-width: 0">
 <h2 style="margin: 0 0 20px; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 700; font-size: clamp(32px, 4vw, 46px); line-height: 1.1; letter-spacing: -0.02em">Let's find your quickest win</h2>
-<p style="margin: 0 0 32px; color: #C9D3DA">Tell me a little about your business and I'll reach out to set up a free 30-minute discovery call. No pressure, no jargon.</p>
+<p style="margin: 0 0 32px; color: #C9D3DA">Tell me a little about your business and I'll reach out to set up your free 30-minute call. No pressure, no jargon.</p>
 <div style="display: flex; flex-direction: column; gap: 12px; color: #E4EAEE">
 <a href="mailto:info@t7techfl.com" style="color: #E4EAEE">info@t7techfl.com</a>
 <span>Serving Jacksonville &amp; Northeast Florida</span>
@@ -242,7 +253,7 @@ a{color:#0B6B58}a:hover{color:#084C3F}
 <label style="display: flex; flex-direction: column; gap: 6px; font-size: 15px; font-weight: 600">Phone (optional)<input name="phone" id="f4" type="tel" style="min-height: 48px; padding: 0 14px; border: 1px solid #A9B4B0; border-radius: 8px; font: inherit; font-weight: 400; background: #FFFFFF"></label>
 <label style="grid-column: 1 / -1; display: flex; flex-direction: column; gap: 6px; font-size: 15px; font-weight: 600">Where would you like to start?<select name="start" id="f6" style="min-height: 48px; padding: 0 14px; border: 1px solid #A9B4B0; border-radius: 8px; font: inherit; font-weight: 400; background: #FFFFFF"><option>Not sure yet, help me decide</option><option>The Money Map</option><option>The 30-Day Fix</option></select></label>
 <label style="grid-column: 1 / -1; display: flex; flex-direction: column; gap: 6px; font-size: 15px; font-weight: 600">What's taking up too much of your time?<textarea name="message" id="f5" rows="4" style="padding: 12px 14px; border: 1px solid #A9B4B0; border-radius: 8px; font: inherit; font-weight: 400; background: #FFFFFF; resize: vertical"></textarea></label>
-<button type="submit" style="grid-column: 1 / -1; min-height: 52px; border: none; border-radius: 8px; background: #0B6B58; color: #FFFFFF; font: inherit; font-weight: 700; cursor: pointer">Request my free discovery call</button>
+<button type="submit" style="grid-column: 1 / -1; min-height: 52px; border: none; border-radius: 8px; background: #0B6B58; color: #FFFFFF; font: inherit; font-weight: 700; cursor: pointer">Request my free 30-minute call</button>
 </form>
 </div>
 </div>

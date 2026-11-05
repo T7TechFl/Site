@@ -335,7 +335,7 @@ footer a { color: #DCE3E8; }
       <p id="tNote">Fill in hours or lost jobs for at least one leak to see what it costs you.</p>
     </div>
     <div class="sendnums">
-      <p>Want to walk through these numbers on your free Score Review? Send them to Michael so he comes prepared.</p>
+      <p>Want to walk through these numbers on a free 30-minute call? Send them to Michael so he comes prepared.</p>
       <button class="btn" type="button" id="sendNums">Send my numbers to Michael</button>
       <p class="fine-dark" id="sendMsg" role="status"></p>
     </div>
@@ -373,11 +373,11 @@ footer a { color: #DCE3E8; }
   <div class="wrap">
     <div class="cta-copy">
       <p class="eyebrow">Not sure which?</p>
-      <h2 id="s5">Get a free 15-minute Score Review</h2>
+      <h2 id="s5">Book a free 30-minute call</h2>
       <p>Bring your score. Michael will tell you which door fits, or tell you honestly if neither does. No pitch.</p>
     </div>
     <div class="cta-act">
-      <a class="btn" href="/#contact">Request my Score Review</a>
+      <a class="btn" href="/#contact">Book my free 30-minute call</a>
       <p class="fine">Or email <a href="mailto:info@t7techfl.com" style="color: #E4EAEE">info@t7techfl.com</a></p>
     </div>
   </div>
@@ -505,7 +505,7 @@ footer a { color: #DCE3E8; }
     var needJv = (num(state.leaks[0].jobs) || num(state.leaks[1].jobs)) && !num(state.jobValue);
     if (needJv) note.textContent = "Add your average job or client value above to count the jobs you're losing.";
     else if (!hasNumbers()) note.textContent = "Fill in hours or lost jobs for at least one leak to see what it costs you.";
-    else note.textContent = "That's what these leaks cost before you fix them. Bring this number to your Score Review.";
+    else note.textContent = "That's what these leaks cost before you fix them. Bring this number to your free 30-minute call.";
     var rec = recommendation();
     $("doorMap").classList.toggle("rec", rec.door === "map");
     $("doorFix").classList.toggle("rec", rec.door === "fix");
