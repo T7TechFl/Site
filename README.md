@@ -7,6 +7,8 @@ Source for https://t7techfl.com, hosted on Netlify (project: t7techsite, https:/
 - `leak-finder/index.html`: the free Leak Finder scorecard at /leak-finder. Its Netlify form is named `leak-finder`; each submission carries the visitor's score, Yes answers and dollar estimates.
 - `hourly/index.html`: the free "What's your hour worth?" calculator at /hourly. Its Netlify form is named `hour-worth`; the result also carries into the Leak Finder's hourly value.
 - `favicon.svg`: browser tab icon
+- `netlify/functions/submission-created.mjs`: sends each person who submits a form a short thank-you email through Resend. Needs `RESEND_API_KEY` set in Netlify's environment variables; without it, nothing is sent. Wording for each form is at the top of the file. The Leak Finder only gets one thank-you, for its first submission.
+- `images/`: the logo and headshot used in the thank-you email
 - `netlify.toml`: tells Netlify to publish this folder as-is (no build step)
 
 Pushing to `main` deploys the site automatically once the repo is linked in Netlify.
