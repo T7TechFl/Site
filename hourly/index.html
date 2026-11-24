@@ -100,10 +100,11 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
 .btn.light:hover { background: #fff; color: var(--ink); }
 .btn.outline { background: transparent; border: 2px solid var(--ink); color: var(--ink); }
 .btn.outline:hover { background: var(--tint); color: var(--ink); }
+.restartbar { display: flex; justify-content: flex-start; padding-top: 24px; padding-bottom: 8px; }
+.restartbar[hidden] { display: none; }
+.restartbar.end { padding-top: 8px; padding-bottom: 32px; }
 .done { display: flex; flex-direction: column; gap: 8px; }
 .done strong { font-family: var(--display); font-size: 26px; color: var(--mint); }
-.restart { align-self: flex-start; background: none; border: 0; padding: 8px 0; color: var(--mint); font: inherit; font-weight: 700; font-size: 15px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; min-height: 44px; }
-.restart:focus-visible { outline: 3px solid var(--mint); outline-offset: 2px; }
 
 .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
 .stat { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 22px 24px; display: flex; flex-direction: column; gap: 8px; }
@@ -160,6 +161,7 @@ footer a { color: #DCE3E8; }
 </header>
 
 <main>
+  <div class="wrap restartbar" hidden><button class="btn outline" type="button" data-restart>Start over</button></div>
   <section class="wrap block" aria-labelledby="s1">
     <div class="block-head">
       <p class="eyebrow">Step 1</p>
@@ -236,7 +238,7 @@ footer a { color: #DCE3E8; }
           <p class="fine">Your email is used to follow up about your results. Tips only if you check the box.</p>
         </div>
       </form>
-      <div class="done" id="doneMsg" hidden><strong id="doneTitle">Your breakdown is unlocked.</strong><button class="restart" id="restart" type="button">Start over with new numbers</button></div>
+      <div class="done" id="doneMsg" hidden><strong id="doneTitle">Your breakdown is unlocked.</strong></div>
     </div>
   </section>
 
@@ -291,6 +293,7 @@ footer a { color: #DCE3E8; }
     </section>
   </div>
 
+  <div class="wrap restartbar end" hidden><button class="btn outline" type="button" data-restart>Start over</button></div>
   <p class="wrap note">This calculator gives a rough estimate to help you plan. It isn't tax or accounting advice.</p>
 </main>
 
@@ -304,15 +307,21 @@ footer a { color: #DCE3E8; }
   var EXAMPLE = { revenue: "240000", expenses: "150000", hours: "55", weeks: "50", who: "me", busy: "12", staffHours: "", staffRate: "" };
   var state = { inputs: Object.assign({}, EXAMPLE), example: true, helperRate: "22", unlocked: false, name: "", email: "", business: "" };
   try { var saved = JSON.parse(localStorage.getItem(KEY) || "null"); if (saved && saved.inputs) state = Object.assign(state, saved); } catch (e) {}
-  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} syncRestart(); }
 
-  var restart = $("restart");
-  if (restart) restart.addEventListener("click", function () {
-    if (!window.confirm("Start over? This clears your answers and results on this device.")) return;
-    try { localStorage.removeItem(KEY); } catch (e) {}
-    window.scrollTo(0, 0);
-    location.reload();
+  function syncRestart() {
+    var show = state.unlocked || !state.example;
+    document.querySelectorAll(".restartbar").forEach(function (el) { el.hidden = !show; });
+  }
+  document.querySelectorAll("[data-restart]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      if (!window.confirm("Start over? This clears your answers and results on this device.")) return;
+      try { localStorage.removeItem(KEY); } catch (e) {}
+      window.scrollTo(0, 0);
+      location.reload();
+    });
   });
+  syncRestart();
   function $(id) { return document.getElementById(id); }
   function num(v) { var n = parseFloat(v); return isFinite(n) && n > 0 ? n : 0; }
   function money(n) { return "$" + Math.round(n).toLocaleString("en-US"); }
