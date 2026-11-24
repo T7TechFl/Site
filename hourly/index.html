@@ -100,7 +100,10 @@ fieldset.field legend { padding: 0; margin-bottom: 6px; }
 .btn.light:hover { background: #fff; color: var(--ink); }
 .btn.outline { background: transparent; border: 2px solid var(--ink); color: var(--ink); }
 .btn.outline:hover { background: var(--tint); color: var(--ink); }
+.done { display: flex; flex-direction: column; gap: 8px; }
 .done strong { font-family: var(--display); font-size: 26px; color: var(--mint); }
+.restart { align-self: flex-start; background: none; border: 0; padding: 8px 0; color: var(--mint); font: inherit; font-weight: 700; font-size: 15px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; min-height: 44px; }
+.restart:focus-visible { outline: 3px solid var(--mint); outline-offset: 2px; }
 
 .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
 .stat { background: var(--paper); border: 1px solid var(--line); border-radius: 16px; padding: 22px 24px; display: flex; flex-direction: column; gap: 8px; }
@@ -233,7 +236,7 @@ footer a { color: #DCE3E8; }
           <p class="fine">Your email is used to follow up about your results. Tips only if you check the box.</p>
         </div>
       </form>
-      <div class="done" id="doneMsg" hidden><strong id="doneTitle">Your breakdown is unlocked.</strong></div>
+      <div class="done" id="doneMsg" hidden><strong id="doneTitle">Your breakdown is unlocked.</strong><button class="restart" id="restart" type="button">Start over with new numbers</button></div>
     </div>
   </section>
 
@@ -302,6 +305,14 @@ footer a { color: #DCE3E8; }
   var state = { inputs: Object.assign({}, EXAMPLE), example: true, helperRate: "22", unlocked: false, name: "", email: "", business: "" };
   try { var saved = JSON.parse(localStorage.getItem(KEY) || "null"); if (saved && saved.inputs) state = Object.assign(state, saved); } catch (e) {}
   function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+  var restart = $("restart");
+  if (restart) restart.addEventListener("click", function () {
+    if (!window.confirm("Start over? This clears your answers and results on this device.")) return;
+    try { localStorage.removeItem(KEY); } catch (e) {}
+    window.scrollTo(0, 0);
+    location.reload();
+  });
   function $(id) { return document.getElementById(id); }
   function num(v) { var n = parseFloat(v); return isFinite(n) && n > 0 ? n : 0; }
   function money(n) { return "$" + Math.round(n).toLocaleString("en-US"); }

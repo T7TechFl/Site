@@ -154,6 +154,8 @@ section.block { padding-block: 48px 8px; display: flex; flex-direction: column; 
 .btn.light:hover { background: #fff; color: var(--ink); }
 .done { display: flex; flex-direction: column; gap: 8px; }
 .done strong { font-family: var(--display); font-size: 26px; color: var(--mint); }
+.restart { align-self: flex-start; background: none; border: 0; padding: 8px 0; color: var(--mint); font: inherit; font-weight: 700; font-size: 15px; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; min-height: 44px; }
+.restart:focus-visible { outline: 3px solid var(--mint); outline-offset: 2px; }
 
 .total { background: var(--ink); color: var(--on-ink); border-radius: 16px; padding: 24px 28px; display: flex; flex-wrap: wrap; gap: 20px 40px; align-items: flex-end; }
 .total div { display: flex; flex-direction: column; gap: 4px; }
@@ -304,6 +306,7 @@ footer a { color: #DCE3E8; }
       <div class="done" id="doneMsg" hidden>
         <strong id="doneTitle">Your results are unlocked.</strong>
         <p class="sub">Scroll down to put a dollar figure on your leaks.</p>
+        <button class="restart" id="restart" type="button">Start over with a fresh scorecard</button>
       </div>
     </div>
   </section>
@@ -412,6 +415,14 @@ footer a { color: #DCE3E8; }
   var state = { answers: {}, leaks: [{ q: "", hours: "", jobs: "" }, { q: "", hours: "", jobs: "" }], rate: "50", jobValue: "", unlocked: false, name: "", email: "", business: "", sentSig: "" };
   try { var saved = JSON.parse(localStorage.getItem(KEY) || "null"); if (saved && saved.answers) state = Object.assign(state, saved); } catch (e) {}
   function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+  var restart = $("restart");
+  if (restart) restart.addEventListener("click", function () {
+    if (!window.confirm("Start over? This clears your answers and results on this device.")) return;
+    try { localStorage.removeItem(KEY); } catch (e) {}
+    window.scrollTo(0, 0);
+    location.reload();
+  });
   function $(id) { return document.getElementById(id); }
 
   var qs = $("qs");
